@@ -1482,7 +1482,7 @@
               </div>
             </div>
 
-            <!-- PANEL A: SUPABASE (PERMANENT CONNECTION) -->
+            <!-- PANEL A: SUPABASE CONFIG (READ-ONLY — PERMANENT CONNECTION) -->
             <div id="panelConfigSupabase">
               <form id="cloudConfigFormSupabase">
                 <div class="mb-3">
@@ -1493,7 +1493,7 @@
                     <span class="input-group-text"><i class="bi bi-link-45deg"></i></span>
                     <input type="url" class="form-control bg-light" id="inputSupabaseUrl" value="https://supabase.hcds.ai" readonly />
                   </div>
-                  <div class="form-text" style="font-size:0.72rem;">Permanently connected to HCDS self-hosted Supabase on Azure VM.</div>
+                  <div class="form-text" style="font-size:0.72rem;">Permanent connection — self-hosted on Azure VM (RG-Web-TeamTask)</div>
                 </div>
 
                 <div class="mb-3">
@@ -1507,7 +1507,7 @@
                       <i class="bi bi-eye"></i>
                     </button>
                   </div>
-                  <div class="form-text" style="font-size:0.72rem;">Read-only. This key is pre-configured for the HCDS team dashboard.</div>
+                  <div class="form-text" style="font-size:0.72rem;">Read-only — managed by HCDS infrastructure team</div>
                 </div>
 
                 <div class="d-flex align-items-center justify-content-between pt-2">
@@ -1515,11 +1515,11 @@
                     <i class="bi bi-broadcast"></i> Test Connection
                   </button>
                   <div class="d-flex gap-2">
-                    <button type="button" class="btn btn-sm btn-outline-danger d-none" id="btnDisconnectCloud">
+                    <button type="button" class="btn btn-sm btn-outline-danger d-none" id="btnDisconnectCloud" style="display:none !important;">
                       <i class="bi bi-x-circle"></i> Disconnect
                     </button>
                     <button type="submit" class="btn btn-sm btn-corporate-primary" id="btnSaveCloudConfig">
-                      <i class="bi bi-cloud-check"></i> Connect Supabase
+                      <i class="bi bi-cloud-check"></i> Reconnect
                     </button>
                   </div>
                 </div>
