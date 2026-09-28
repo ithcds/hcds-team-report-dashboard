@@ -1482,37 +1482,37 @@
               </div>
             </div>
 
-            <!-- PANEL A: SUPABASE FORM -->
+            <!-- PANEL A: SUPABASE (PERMANENT CONNECTION) -->
             <div id="panelConfigSupabase">
               <form id="cloudConfigFormSupabase">
                 <div class="mb-3">
                   <label for="inputSupabaseUrl" class="form-label fw-semibold" style="font-size:0.82rem;">
-                    Supabase Project URL <span class="text-danger">*</span>
+                    <i class="bi bi-lock-fill text-muted me-1"></i>Supabase Project URL
                   </label>
                   <div class="input-group input-group-sm">
                     <span class="input-group-text"><i class="bi bi-link-45deg"></i></span>
-                    <input type="url" class="form-control" id="inputSupabaseUrl" value="https://supabase.hcds.ai" placeholder="https://xyzprojectref.supabase.co" />
+                    <input type="url" class="form-control bg-light" id="inputSupabaseUrl" value="https://supabase.hcds.ai" readonly />
                   </div>
-                  <div class="form-text" style="font-size:0.72rem;">Found in Supabase Dashboard > Project Settings > API</div>
+                  <div class="form-text" style="font-size:0.72rem;">Permanently connected to HCDS self-hosted Supabase on Azure VM.</div>
                 </div>
 
                 <div class="mb-3">
                   <label for="inputSupabaseKey" class="form-label fw-semibold" style="font-size:0.82rem;">
-                    Supabase Anon (Public) Key <span class="text-danger">*</span>
+                    <i class="bi bi-lock-fill text-muted me-1"></i>Supabase Anon (Public) Key
                   </label>
                   <div class="input-group input-group-sm">
                     <span class="input-group-text"><i class="bi bi-key-fill"></i></span>
-                    <input type="password" class="form-control" id="inputSupabaseKey" value="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNzg3NjA2OTQyLCJleHAiOjIxMDMxODI5NDJ9.ck9xeyHCL3PBTq4Ozu1NqBi3BCsF8sS5zbtfEL_4no4" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." />
+                    <input type="password" class="form-control bg-light" id="inputSupabaseKey" value="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNzg3NjA2OTQyLCJleHAiOjIxMDMxODI5NDJ9.ck9xeyHCL3PBTq4Ozu1NqBi3BCsF8sS5zbtfEL_4no4" readonly />
                     <button class="btn btn-outline-secondary" type="button" id="btnToggleKeyVisibility" title="Show / Hide Key">
                       <i class="bi bi-eye"></i>
                     </button>
                   </div>
-                  <div class="form-text" style="font-size:0.72rem;">Safe for browser & Netlify clients (Project Settings > API > 'anon' 'public' key).</div>
+                  <div class="form-text" style="font-size:0.72rem;">Read-only. This key is pre-configured for the HCDS team dashboard.</div>
                 </div>
 
                 <div class="d-flex align-items-center justify-content-between pt-2">
                   <button type="button" class="btn btn-sm btn-outline-secondary" id="btnTestCloudConnection">
-                    <i class="bi bi-broadcast"></i> Test Supabase Connection
+                    <i class="bi bi-broadcast"></i> Test Connection
                   </button>
                   <div class="d-flex gap-2">
                     <button type="button" class="btn btn-sm btn-outline-danger d-none" id="btnDisconnectCloud">
