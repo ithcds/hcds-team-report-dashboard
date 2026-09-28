@@ -353,6 +353,11 @@
       margin: 0;
     }
     .app-card-body { padding: 1.25rem; }
+    .exec-summary-content h5 { border-bottom: 2px solid #e2e8f0; padding-bottom: 0.4rem; }
+    .exec-summary-content h6 { font-size: 0.92rem; }
+    .exec-summary-content ul { list-style: none; padding-left: 0.5rem !important; }
+    .exec-summary-content li { position: relative; padding-left: 1.1rem; margin-bottom: 0.3rem; font-size: 0.85rem; color: #475569; }
+    .exec-summary-content li::before { content: '▸'; position: absolute; left: 0; color: #0ea5e9; font-weight: bold; }
 
     /* ─── Status Badges (Strict 4 Status Lifecycle) ───────────── */
     .status-badge {
@@ -893,6 +898,21 @@
               <div class="metric-label">Cancel</div>
               <div class="metric-sub">Deprioritized</div>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Executive Summary -->
+      <div class="app-card mb-4" id="executiveSummaryCard">
+        <div class="app-card-header">
+          <div class="app-card-title">
+            <i class="bi bi-journal-richtext text-info"></i> Executive Summary
+          </div>
+          <span class="badge bg-secondary" id="execSummaryDate" style="font-size:0.72rem;">Loading...</span>
+        </div>
+        <div class="app-card-body">
+          <div id="execSummaryContent" class="exec-summary-content" style="font-size:0.88rem; line-height:1.7;">
+            <div class="text-center text-muted py-3"><i class="bi bi-arrow-repeat spin"></i> Loading executive summary...</div>
           </div>
         </div>
       </div>
@@ -4784,6 +4804,7 @@ const AppController = {
 
   refreshAll() {
     this.renderSummaryView();
+    this.renderExecutiveSummary();
     this.renderTasksTable();
     this.renderPersonnelWorkloadTable();
     this.renderPersonnelWeeklyReportTable();
@@ -5659,6 +5680,49 @@ const AppController = {
       `;
       tbody.appendChild(tr);
     });
+  },
+
+  async renderExecutiveSummary() {
+    const container = document.getElementById('execSummaryContent');
+    const dateBadge = document.getElementById('execSummaryDate');
+    if (!container) return;
+    try {
+      let client = CloudSyncService.isConnected && CloudSyncService.supabase
+        ? CloudSyncService.supabase : null;
+      if (!client && typeof DEFAULT_CLOUD_CONFIG !== 'undefined' && DEFAULT_CLOUD_CONFIG.supabaseUrl && DEFAULT_CLOUD_CONFIG.supabaseKey) {
+        const { createClient } = supabase;
+        client = createClient(DEFAULT_CLOUD_CONFIG.supabaseUrl, DEFAULT_CLOUD_CONFIG.supabaseKey);
+      }
+      if (!client) {
+        container.innerHTML = '<div class="text-muted py-3">Connect to Supabase to view executive summary.</div>';
+        return;
+      }
+      const { data, error } = await client.from('executive_summary').select('*').order('last_update', { ascending: false }).limit(1);
+      if (error || !data || data.length === 0) {
+        container.innerHTML = '<div class="text-muted py-3">No executive summary available.</div>';
+        if (dateBadge) dateBadge.textContent = '—';
+        return;
+      }
+      const entry = data[0];
+      if (dateBadge) {
+        const d = new Date(entry.last_update + 'T00:00:00');
+        dateBadge.textContent = d.toLocaleDateString('en-US', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
+        dateBadge.classList.replace('bg-secondary', 'bg-info');
+      }
+      // Simple markdown to HTML
+      let html = this.escapeHtml(entry.summary)
+        .replace(/^## (.+)$/gm, '<h5 class="fw-bold text-primary mt-3 mb-2">$1</h5>')
+        .replace(/^### (.+)$/gm, '<h6 class="fw-bold mt-3 mb-1" style="color:#334155;">$1</h6>')
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+        .replace(/^- (.+)$/gm, '<li>$1</li>')
+        .replace(/(<li>.*<\/li>\n?)+/g, (m) => '<ul class="mb-2 ps-3">' + m + '</ul>')
+        .replace(/\n\n/g, '<br>')
+        .replace(/\n/g, '');
+      container.innerHTML = html;
+    } catch (e) {
+      console.warn('Executive summary fetch error:', e);
+      container.innerHTML = '<div class="text-muted py-3">Unable to load executive summary.</div>';
+    }
   },
 
   renderHighlights() {
