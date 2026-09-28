@@ -5620,18 +5620,29 @@ const AppController = {
   async renderBigData() {
     const tbody = document.getElementById('bigdataTable');
     if (!tbody) return;
-    tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted"><i class="bi bi-arrow-repeat spin"></i> Loading from Supabase...</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted"><i class="bi bi-arrow-repeat spin"></i> Loading pipelines...</td></tr>';
     try {
-      if (CloudSyncService.isConnected && CloudSyncService.supabase) {
-        const { data, error } = await CloudSyncService.supabase.from('big_data_pipelines').select('*').order('id');
-        if (!error && data) {
+      // Use existing connection or create a direct fetch
+      let client = CloudSyncService.isConnected && CloudSyncService.supabase
+        ? CloudSyncService.supabase
+        : null;
+      // If not connected yet, try using default config directly
+      if (!client && typeof DEFAULT_CLOUD_CONFIG !== 'undefined' && DEFAULT_CLOUD_CONFIG.supabaseUrl && DEFAULT_CLOUD_CONFIG.supabaseKey) {
+        const { createClient } = supabase;
+        client = createClient(DEFAULT_CLOUD_CONFIG.supabaseUrl, DEFAULT_CLOUD_CONFIG.supabaseKey);
+      }
+      if (client) {
+        const { data, error } = await client.from('big_data_pipelines').select('*').order('id');
+        if (!error && data && data.length > 0) {
           BIG_DATA_PIPELINES = data.map(r => ({ id: r.id, dataset: r.dataset, product: r.product, records: r.records || 0, quality: parseFloat(r.quality) || 0, lastRun: r.last_run || '', nextRun: r.next_run || '', status: r.status || 'Planned' }));
         }
       }
     } catch (e) { console.warn('BigData fetch error:', e); }
     tbody.innerHTML = '';
     if (BIG_DATA_PIPELINES.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted py-3">No pipeline data — connect to Supabase to load.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted py-3"><i class="bi bi-hourglass-split me-1"></i>Loading pipeline data...</td></tr>';
+      // Retry once after 3 seconds (connection may still be initializing)
+      setTimeout(() => { if (BIG_DATA_PIPELINES.length === 0) this.renderBigData(); }, 3000);
       return;
     }
     BIG_DATA_PIPELINES.forEach(p => {
