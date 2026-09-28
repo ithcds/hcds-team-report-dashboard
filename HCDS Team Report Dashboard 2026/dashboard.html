@@ -1469,21 +1469,16 @@
               <span class="badge bg-secondary" id="cloudBannerBadge">Offline</span>
             </div>
 
-            <!-- Cloud Provider Switcher -->
+            <!-- Cloud Provider: Supabase Only -->
             <div class="mb-3">
-              <label class="form-label fw-bold text-dark mb-1" style="font-size:0.8rem;">Select Cloud Database Provider:</label>
-              <div class="btn-group w-100" role="group">
-                <input type="radio" class="btn-check" name="cloudProviderRadio" id="radioProviderSupabase" value="supabase" checked autocomplete="off">
-                <label class="btn btn-outline-primary py-2 text-start" for="radioProviderSupabase" style="font-size:0.8rem;">
-                  <i class="bi bi-lightning-charge-fill me-1 text-warning"></i> <strong>Option A: Supabase</strong><br>
-                  <small class="text-muted" style="font-size:0.7rem;">PostgreSQL · Instant WebSockets (< 500ms)</small>
-                </label>
-
-                <input type="radio" class="btn-check" name="cloudProviderRadio" id="radioProviderGSheets" value="googlesheets" autocomplete="off">
-                <label class="btn btn-outline-success py-2 text-start" for="radioProviderGSheets" style="font-size:0.8rem;">
-                  <i class="bi bi-file-earmark-spreadsheet-fill me-1 text-success"></i> <strong>Option B: Google Sheets</strong><br>
-                  <small class="text-muted" style="font-size:0.7rem;">Google Apps Script · Direct Spreadsheet Rows</small>
-                </label>
+              <label class="form-label fw-bold text-dark mb-1" style="font-size:0.8rem;">Cloud Database Provider:</label>
+              <div class="w-100">
+                <input type="hidden" name="cloudProviderRadio" id="radioProviderSupabase" value="supabase" checked>
+                <div class="alert alert-primary py-2 px-3 mb-0 d-flex align-items-center gap-2" style="font-size:0.82rem;">
+                  <i class="bi bi-lightning-charge-fill text-warning"></i>
+                  <div><strong>Supabase (PostgreSQL)</strong> — Self-hosted on Azure VM <code>supabase.hcds.ai</code><br>
+                  <small class="text-muted" style="font-size:0.7rem;">Instant WebSocket sync · Let's Encrypt SSL · CORS enabled for task.hcds.ai</small></div>
+                </div>
               </div>
             </div>
 
@@ -1507,7 +1502,7 @@
                   </label>
                   <div class="input-group input-group-sm">
                     <span class="input-group-text"><i class="bi bi-key-fill"></i></span>
-                    <input type="password" class="form-control" id="inputSupabaseKey" value="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InpxamhwZGhwZWpxa2Rtcnl3eGRsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODc2MDY5NDIsImV4cCI6MjEwMzE4Mjk0Mn0.aMSBvgIXIl4qhQbUH2YV0nBpcPMH9exBwlkylSk8Vrk" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." />
+                    <input type="password" class="form-control" id="inputSupabaseKey" value="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNzg3NjA2OTQyLCJleHAiOjIxMDMxODI5NDJ9.ck9xeyHCL3PBTq4Ozu1NqBi3BCsF8sS5zbtfEL_4no4" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." />
                     <button class="btn btn-outline-secondary" type="button" id="btnToggleKeyVisibility" title="Show / Hide Key">
                       <i class="bi bi-eye"></i>
                     </button>
@@ -1531,35 +1526,8 @@
               </form>
             </div>
 
-            <!-- PANEL B: GOOGLE SHEETS FORM -->
-            <div id="panelConfigGSheets" class="d-none">
-              <form id="cloudConfigFormGSheets">
-                <div class="mb-3">
-                  <label for="inputGSheetUrl" class="form-label fw-semibold" style="font-size:0.82rem;">
-                    Google Apps Script Web App URL <span class="text-danger">*</span>
-                  </label>
-                  <div class="input-group input-group-sm">
-                    <span class="input-group-text"><i class="bi bi-file-earmark-spreadsheet text-success"></i></span>
-                    <input type="url" class="form-control" id="inputGSheetUrl" placeholder="https://script.google.com/macros/s/AKfy.../exec" />
-                  </div>
-                  <div class="form-text" style="font-size:0.72rem;">From Google Sheets > Extensions > Apps Script > Deploy as Web App (Access: Anyone).</div>
-                </div>
-
-                <div class="d-flex align-items-center justify-content-between pt-2">
-                  <button type="button" class="btn btn-sm btn-outline-secondary" id="btnTestGSheetConnection">
-                    <i class="bi bi-broadcast"></i> Test Google Sheet Link
-                  </button>
-                  <div class="d-flex gap-2">
-                    <button type="button" class="btn btn-sm btn-outline-danger d-none" id="btnDisconnectGSheet">
-                      <i class="bi bi-x-circle"></i> Disconnect
-                    </button>
-                    <button type="submit" class="btn btn-sm btn-success" id="btnSaveGSheetConfig">
-                      <i class="bi bi-cloud-check"></i> Connect Google Sheet
-                    </button>
-                  </div>
-                </div>
-              </form>
-            </div>
+            <!-- PANEL B: Google Sheets (removed — Supabase only) -->
+            <div id="panelConfigGSheets" class="d-none"></div>
 
           </div>
 
@@ -1907,7 +1875,7 @@ function doPost(e) {
 /* ─────────────────────────────────────────────────────────
    REFERENCE BASELINE DATA (FROM EXCEL WORKBOOK)
 ───────────────────────────────────────────────────────── */
-const EXCEL_BASELINE_TASKS = [
+const EXCEL_BASELINE_TASKS = [ /* Removed — all data loaded from Supabase */
   {
     "id": "ACT-001",
     "product": "Shared Platform",
@@ -2675,118 +2643,8 @@ const HIGHLIGHT_TASKS = [
   }
 ];
 
-const BIG_DATA_PIPELINES = [
-  {
-    "id": "BD-001",
-    "dataset": "robust testing scenario for Annie and iSmartOffice",
-    "product": "Annie Insights Web",
-    "records": 10000,
-    "quality": 0.95,
-    "lastRun": "46163",
-    "nextRun": "",
-    "status": "Planned"
-  },
-  {
-    "id": "BD-002",
-    "dataset": "Intra Oral Photos",
-    "product": "Annie Insights Web",
-    "records": 228410,
-    "quality": 0.95,
-    "lastRun": "46177",
-    "nextRun": "",
-    "status": "Completed"
-  },
-  {
-    "id": "BD-003",
-    "dataset": "X-Rays / Radiographs",
-    "product": "Annie Insights Web",
-    "records": 308007,
-    "quality": 0.98,
-    "lastRun": "46177",
-    "nextRun": "",
-    "status": "Completed"
-  },
-  {
-    "id": "BD-004",
-    "dataset": "3D Scans (STL)",
-    "product": "Annie Insights Web",
-    "records": 22908,
-    "quality": 0.97,
-    "lastRun": "46177",
-    "nextRun": "",
-    "status": "Completed"
-  },
-  {
-    "id": "BD-005",
-    "dataset": "Antioch Patient Archive",
-    "product": "iSmartOffice Web App",
-    "records": 2752,
-    "quality": 0.96,
-    "lastRun": "46177",
-    "nextRun": "",
-    "status": "Completed"
-  },
-  {
-    "id": "BD-006",
-    "dataset": "Grayslake Patient Archive",
-    "product": "iSmartOffice Web App",
-    "records": 1840,
-    "quality": 0.96,
-    "lastRun": "46177",
-    "nextRun": "",
-    "status": "Completed"
-  },
-  {
-    "id": "BD-007",
-    "dataset": "Gurnee Patient Archive",
-    "product": "iSmartOffice Web App",
-    "records": 3120,
-    "quality": 0.96,
-    "lastRun": "46177",
-    "nextRun": "",
-    "status": "Completed"
-  },
-  {
-    "id": "BD-008",
-    "dataset": "Invisalign Refine",
-    "product": "iSmartOffice Web App",
-    "records": 1894,
-    "quality": 0.99,
-    "lastRun": "46177",
-    "nextRun": "",
-    "status": "Completed"
-  },
-  {
-    "id": "BD-009",
-    "dataset": "Invisalign Verified",
-    "product": "iSmartOffice Web App",
-    "records": 4120,
-    "quality": 0.99,
-    "lastRun": "46177",
-    "nextRun": "",
-    "status": "Completed"
-  },
-  {
-    "id": "BD-010",
-    "dataset": "iTero Invisalign Verified",
-    "product": "iSmartOffice Web App",
-    "records": 12050,
-    "quality": 0.99,
-    "lastRun": "46177",
-    "nextRun": "",
-    "status": "Completed"
-  },
-  {
-    "id": "BD-011",
-    "dataset": "1600 Dolphin case processing",
-    "product": "Annie Insights Web",
-    "records": 1600,
-    "quality": 0.96,
-    "lastRun": "46148",
-    "nextRun": "",
-    "status": "Completed"
-  }
-];
+/* BIG_DATA_PIPELINES — loaded from Supabase big_data_pipelines table */
+let BIG_DATA_PIPELINES = [];
 
 /* ─────────────────────────────────────────────────────────
    STANDARDIZED TEAM ROSTER & COLOR PALETTE
@@ -5759,10 +5617,23 @@ const AppController = {
     }
   },
 
-  renderBigData() {
+  async renderBigData() {
     const tbody = document.getElementById('bigdataTable');
     if (!tbody) return;
+    tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted"><i class="bi bi-arrow-repeat spin"></i> Loading from Supabase...</td></tr>';
+    try {
+      if (CloudSyncService.isConnected && CloudSyncService.supabase) {
+        const { data, error } = await CloudSyncService.supabase.from('big_data_pipelines').select('*').order('id');
+        if (!error && data) {
+          BIG_DATA_PIPELINES = data.map(r => ({ id: r.id, dataset: r.dataset, product: r.product, records: r.records || 0, quality: parseFloat(r.quality) || 0, lastRun: r.last_run || '', nextRun: r.next_run || '', status: r.status || 'Planned' }));
+        }
+      }
+    } catch (e) { console.warn('BigData fetch error:', e); }
     tbody.innerHTML = '';
+    if (BIG_DATA_PIPELINES.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="7" class="text-center text-muted py-3">No pipeline data — connect to Supabase to load.</td></tr>';
+      return;
+    }
     BIG_DATA_PIPELINES.forEach(p => {
       const qColor = p.quality >= 0.97 ? '#10b981' : '#f59e0b';
       const tr = document.createElement('tr');
@@ -5770,7 +5641,7 @@ const AppController = {
         <td class="fw-bold text-secondary">${p.id}</td>
         <td class="fw-semibold">${this.escapeHtml(p.dataset)}</td>
         <td><span class="badge bg-light text-secondary border">${this.escapeHtml(p.product)}</span></td>
-        <td>${p.records.toLocaleString()}</td>
+        <td>${(p.records || 0).toLocaleString()}</td>
         <td><strong style="color:${qColor};">${Math.round(p.quality * 100)}%</strong></td>
         <td class="text-muted small">${p.lastRun}</td>
         <td><span class="status-badge ${normalizeStatus(p.status) === 'Complete' ? 'status-badge-complete' : 'status-badge-pending'}">${p.status}</span></td>
