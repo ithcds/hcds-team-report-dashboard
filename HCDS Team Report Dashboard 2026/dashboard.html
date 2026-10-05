@@ -5697,7 +5697,7 @@ const AppController = {
         container.innerHTML = '<div class="text-muted py-3">Connect to Supabase to view executive summary.</div>';
         return;
       }
-      const { data, error } = await client.from('executive_summary').select('*').order('last_update', { ascending: false }).limit(1);
+      const { data, error } = await client.from('executive_summary').select('*').eq('isactive', 1).order('last_update', { ascending: false }).limit(1);
       if (error || !data || data.length === 0) {
         container.innerHTML = '<div class="text-muted py-3">No executive summary available.</div>';
         if (dateBadge) dateBadge.textContent = '—';
