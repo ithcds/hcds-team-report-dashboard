@@ -62,8 +62,8 @@ class Office2DScene {
       },
       {
         id: 'architect',
-        title: 'Chief Architect Bay',
-        subtitle: 'Core Architecture & Blocker Untangling',
+        title: 'Architect Corner',
+        subtitle: 'Core Architecture & AI Research',
         x: 440,
         y: 30,
         w: 400,
@@ -206,6 +206,32 @@ class Office2DScene {
         walkSpeed: 1.6,
         thought: { text: '', timer: 0, maxTimer: 220, opacity: 0 }
       },
+      'ridwan': {
+        key: 'ridwan',
+        name: 'Ridwan',
+        role: 'Research',
+        x: 520,
+        y: 130,
+        homeX: 520,
+        homeY: 130,
+        deskX: 485,
+        deskY: 152,
+        deskW: 70,
+        deskH: 42,
+        color: '#06b6d4',
+        hair: '#1e293b',
+        shirt: '#0891b2',
+        pants: '#0f172a',
+        status: 'working',
+        activeTask: 'Deep Learning Model Optimization & AI Research',
+        direction: 'down',
+        state: 'desk',
+        actionTimer: 480,
+        waypoints: [],
+        isWalking: false,
+        walkSpeed: 1.6,
+        thought: { text: '', timer: 0, maxTimer: 220, opacity: 0 }
+      },
       'aryo': {
         key: 'aryo',
         name: 'Master Aryo',
@@ -214,9 +240,9 @@ class Office2DScene {
         y: 130,
         homeX: 640,
         homeY: 130,
-        deskX: 590,
+        deskX: 605,
         deskY: 152,
-        deskW: 105,
+        deskW: 70,
         deskH: 42,
         color: '#6366f1',
         hair: '#0f172a',
@@ -227,6 +253,32 @@ class Office2DScene {
         direction: 'down',
         state: 'desk',
         actionTimer: 520,
+        waypoints: [],
+        isWalking: false,
+        walkSpeed: 1.6,
+        thought: { text: '', timer: 0, maxTimer: 220, opacity: 0 }
+      },
+      'joko': {
+        key: 'joko',
+        name: 'Joko',
+        role: 'Research',
+        x: 760,
+        y: 130,
+        homeX: 760,
+        homeY: 130,
+        deskX: 725,
+        deskY: 152,
+        deskW: 70,
+        deskH: 42,
+        color: '#8b5cf6',
+        hair: '#451a03',
+        shirt: '#6d28d9',
+        pants: '#1e1b4b',
+        status: 'working',
+        activeTask: 'Dataset Validation & Clinical Landmark Research',
+        direction: 'down',
+        state: 'desk',
+        actionTimer: 540,
         waypoints: [],
         isWalking: false,
         walkSpeed: 1.6,
@@ -935,6 +987,18 @@ class Office2DScene {
         "🔬 Reviewing clinical edge cases in AI diagnostics",
         "📐 Analyzing craniomaxillofacial angle metrics",
         "✨ Clinical diagnostic model verification completed"
+      ],
+      'ridwan': [
+        "🔬 Researching Vision Transformer models for cephalometrics",
+        "📊 Model benchmark: latency down 24ms, precision high",
+        "💡 Fine-tuning deep learning feature extraction backbones",
+        "🧪 Synthesizing test dataset validation findings"
+      ],
+      'joko': [
+        "📈 Analyzing loss curves for orthodontic landmarking",
+        "🔍 Investigating data augmentation edge cases",
+        "🧠 Running ablation study on multi-scale feature pyramids",
+        "📑 Drafting clinical research validation methodology"
       ]
     };
 
@@ -1307,17 +1371,17 @@ class Office2DScene {
 
     // Master Aryo Espresso Station
     ctx.fillStyle = '#334155';
-    ctx.fillRect(770, 52, 34, 34);
+    ctx.fillRect(800, 50, 30, 32);
     ctx.fillStyle = '#cbd5e1';
-    ctx.fillRect(774, 64, 26, 6);
+    ctx.fillRect(803, 62, 24, 6);
     ctx.fillStyle = '#ef4444';
-    ctx.fillRect(778, 56, 5, 5); // red switch
+    ctx.fillRect(806, 54, 5, 5); // red switch
 
     // Animated steam
     const steamY = (this.tick % 36) * 0.35;
     ctx.fillStyle = 'rgba(255, 255, 255, ' + (0.4 - steamY / 20) + ')';
     ctx.beginPath();
-    ctx.arc(788, 50 - steamY, 2.5 + steamY * 0.15, 0, Math.PI * 2);
+    ctx.arc(815, 48 - steamY, 2.5 + steamY * 0.15, 0, Math.PI * 2);
     ctx.fill();
 
     // 3. Server Racks (Mas Ringo Lab)
@@ -1378,20 +1442,20 @@ class Office2DScene {
       if (p.key === 'aryo') {
         // Master Aryo: Triple Ultra-Wide Monitor
         ctx.fillStyle = '#020617';
-        ctx.fillRect(p.deskX + 6, p.deskY + 4, 26, 15);
-        ctx.fillRect(p.deskX + 35, p.deskY + 2, 35, 17);
-        ctx.fillRect(p.deskX + 73, p.deskY + 4, 26, 15);
+        ctx.fillRect(p.deskX + 6, p.deskY + 4, 16, 15);
+        ctx.fillRect(p.deskX + 24, p.deskY + 2, 22, 17);
+        ctx.fillRect(p.deskX + 48, p.deskY + 4, 16, 15);
 
         ctx.fillStyle = '#818cf8';
-        ctx.fillRect(p.deskX + 8, p.deskY + 6, 22, 11);
-        ctx.fillRect(p.deskX + 37, p.deskY + 4, 31, 13);
-        ctx.fillRect(p.deskX + 75, p.deskY + 6, 22, 11);
+        ctx.fillRect(p.deskX + 8, p.deskY + 6, 12, 11);
+        ctx.fillRect(p.deskX + 26, p.deskY + 4, 18, 13);
+        ctx.fillRect(p.deskX + 50, p.deskY + 6, 12, 11);
 
         // Keyboard & Mouse
         ctx.fillStyle = '#475569';
-        ctx.fillRect(p.deskX + 36, p.deskY + 23, 26, 8);
+        ctx.fillRect(p.deskX + 25, p.deskY + 23, 20, 8);
         ctx.fillStyle = '#e2e8f0';
-        ctx.fillRect(p.deskX + 66, p.deskY + 24, 5, 6);
+        ctx.fillRect(p.deskX + 48, p.deskY + 24, 4, 6);
       } else if (p.key === 'fikri' || p.key === 'kaboudan') {
         // Annie Team: Dual AI Screens
         ctx.fillStyle = '#020617';

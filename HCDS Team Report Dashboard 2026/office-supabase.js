@@ -41,12 +41,36 @@ const OFFICE_MEMBERS = {
     displayName: 'Master Aryo',
     fullName: 'Aryo Handono',
     role: 'Chief System Architect',
-    desk: 'Chief Architect Bay',
+    desk: 'Architect Corner',
     color: '#6366f1',
     avatarChar: 'A',
     aliases: ['Aryo Handono', 'Master Aryo', 'Master', 'Aryo'],
     phone: '6282122061000',
     bio: 'Creator of Bolt & Core Architect of HCDS, Annie Insights, and iSmartOffice systems. Lead architect untangling high-complexity engineering blockers.'
+  },
+  'ridwan': {
+    id: 'ridwan',
+    displayName: 'Ridwan',
+    fullName: 'Ridwan',
+    role: 'Research',
+    desk: 'Architect Corner',
+    color: '#06b6d4',
+    avatarChar: 'R',
+    aliases: ['Ridwan', 'Muhammad Ridwan', 'M. Ridwan'],
+    phone: null,
+    bio: 'AI & Systems Research. Investigating model optimization, machine learning pipelines, and experimental features.'
+  },
+  'joko': {
+    id: 'joko',
+    displayName: 'Joko',
+    fullName: 'Joko',
+    role: 'Research',
+    desk: 'Architect Corner',
+    color: '#8b5cf6',
+    avatarChar: 'J',
+    aliases: ['Joko', 'Joko Susilo', 'Joko S'],
+    phone: null,
+    bio: 'Data & Algorithmic Research. Exploring clinical dataset validation, data pipelines, and research benchmarks.'
   },
   'ringo': {
     id: 'ringo',
@@ -143,9 +167,9 @@ const OFFICE_CLUSTERS = [
     members: ['kusnoto', 'flavio']
   },
   {
-    name: 'Chief Architect Bay',
-    badge: 'Core Engine',
-    members: ['aryo']
+    name: 'Architect Corner',
+    badge: 'Core Engine & Research',
+    members: ['aryo', 'ridwan', 'joko']
   },
   {
     name: 'Cloud & Infrastructure Bay',
