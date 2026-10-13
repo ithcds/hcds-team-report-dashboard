@@ -100,17 +100,7 @@ const TEAM_CONFIG = {
     shirt: '#2563eb',
     hair: '#0f172a',
     accessories: 'peci',
-    x: 2.2, z: 2.5, rot: Math.PI
-  },
-  'annie': {
-    id: 'annie',
-    name: 'Annie Team',
-    role: 'Clinical Case Validator',
-    cluster: 'Annie Insights Team',
-    shirt: '#059669',
-    hair: '#059669',
-    accessories: 'hijab',
-    x: 4.5, z: 2.5, rot: Math.PI
+    x: 3.0, z: 2.5, rot: Math.PI
   },
   'kaboudan': {
     id: 'kaboudan',
@@ -120,7 +110,7 @@ const TEAM_CONFIG = {
     shirt: '#f8fafc',
     hair: '#64748b',
     accessories: 'lab_coat',
-    x: 6.8, z: 2.5, rot: Math.PI,
+    x: 5.8, z: 2.5, rot: Math.PI,
     isDecoration: true
   },
   'ary': {
@@ -697,18 +687,14 @@ function setupOfficeLayout() {
   buildChair(scene, -1.9, 1.9, 0, '#713f12');
   buildMonitor(scene, -1.9, 2.5, Math.PI, '#eab308');
 
-  // 6. Annie Insights Team Cluster (Fikri, Annie Team, Dr. Kaboudan)
-  buildDesk(scene, 2.2, 2.5, 1.6, 0.85); // Fikri
-  buildChair(scene, 2.2, 1.9, 0, '#1e3a8a');
-  buildMonitor(scene, 2.2, 2.5, Math.PI, '#3b82f6');
+  // 6. Annie Insights Team Cluster (Kang Fikri & Dr. Kaboudan)
+  buildDesk(scene, 3.0, 2.5, 1.8, 0.85); // Fikri
+  buildChair(scene, 3.0, 1.9, 0, '#1e3a8a');
+  buildMonitor(scene, 3.0, 2.5, Math.PI, '#3b82f6');
 
-  buildDesk(scene, 4.5, 2.5, 1.6, 0.85); // Annie Team
-  buildChair(scene, 4.5, 1.9, 0, '#064e3b');
-  buildMonitor(scene, 4.5, 2.5, Math.PI, '#10b981');
-
-  buildDesk(scene, 6.8, 2.5, 1.6, 0.85); // Dr. Kaboudan (Decorative)
-  buildChair(scene, 6.8, 1.9, 0, '#334155');
-  buildMonitor(scene, 6.8, 2.5, Math.PI, '#64748b');
+  buildDesk(scene, 5.8, 2.5, 1.8, 0.85); // Dr. Kaboudan (Advisor)
+  buildChair(scene, 5.8, 1.9, 0, '#334155');
+  buildMonitor(scene, 5.8, 2.5, Math.PI, '#64748b');
 
   // 7. Meeting Area & Whiteboard
   buildMeetingTable(0, -1.0);

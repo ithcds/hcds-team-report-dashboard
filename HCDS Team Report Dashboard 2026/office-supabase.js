@@ -107,19 +107,6 @@ const OFFICE_MEMBERS = {
     aliases: ['Fikri Irawan', 'Kang Fikri', 'Fikri'],
     phone: '6281322017333',
     bio: 'Mobile App Developer for iSmartOffice & Sphinx apps, Annie test case coordinator, and weekly development tracking.'
-  },
-  'annie': {
-    id: 'annie',
-    displayName: 'Annie Team',
-    fullName: 'Annie Insights QA & Validation Team',
-    role: 'Clinical Case Validator',
-    desk: 'Annie Insights Team Desk',
-    color: '#059669',
-    avatarChar: 'A',
-    aliases: ['Annie Team', 'Puri Andriani', 'Puri', 'Annie', 'Annie QA'],
-    phone: '628158809735',
-    bio: 'Annie Insights Validation Team. Dedicated to case quality assurance, verifying orthodontic test cases (Zoe, Dolphin, Sambataro), and model retraining annotations.'
-  },
   'kaboudan': {
     id: 'kaboudan',
     displayName: 'Dr. Kaboudan',
@@ -172,7 +159,7 @@ const OFFICE_CLUSTERS = [
   {
     name: 'Annie Insights Team Desk',
     badge: 'AI & Validation',
-    members: ['fikri', 'annie', 'kaboudan']
+    members: ['fikri', 'kaboudan']
   },
   {
     name: 'Global Outreach Desk',
