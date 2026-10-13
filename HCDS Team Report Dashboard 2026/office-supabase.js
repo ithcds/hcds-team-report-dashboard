@@ -107,6 +107,7 @@ const OFFICE_MEMBERS = {
     aliases: ['Fikri Irawan', 'Kang Fikri', 'Fikri'],
     phone: '6281322017333',
     bio: 'Mobile App Developer for iSmartOffice & Sphinx apps, Annie test case coordinator, and weekly development tracking.'
+  },
   'kaboudan': {
     id: 'kaboudan',
     displayName: 'Dr. Kaboudan',
@@ -269,14 +270,16 @@ class OfficeSupabaseAdapter {
         this.queryTable('team_contact', 'select=*')
       ]);
 
-      this.tasks = tasksRes || [];
-      this.reminders = remindersRes || [];
-      this.contacts = contactsRes || [];
+      this.tasks = (Array.isArray(tasksRes) && tasksRes.length > 0) ? tasksRes : (this.tasks || []);
+      this.reminders = (Array.isArray(remindersRes) && remindersRes.length > 0) ? remindersRes : (this.reminders || []);
+      this.contacts = (Array.isArray(contactsRes) && contactsRes.length > 0) ? contactsRes : (this.contacts || []);
 
       this.processData();
       this.renderAll();
     } catch (err) {
       console.error('[OfficeSupabase] Error loading initial data:', err);
+      this.processData();
+      this.renderAll();
     }
   }
 
@@ -293,25 +296,31 @@ class OfficeSupabaseAdapter {
     const primaryUrl = isLocal ? `/api/supabase/${table}?${query}` : `${OFFICE_SUPABASE_CONFIG.url}/rest/v1/${table}?${query}`;
     const fallbackUrl = isLocal ? `${OFFICE_SUPABASE_CONFIG.url}/rest/v1/${table}?${query}` : `/api/supabase/${table}?${query}`;
 
-    try {
-      let res = await fetch(primaryUrl, {
-        headers: {
-          'apikey': OFFICE_SUPABASE_CONFIG.key,
-          'Authorization': `Bearer ${OFFICE_SUPABASE_CONFIG.key}`
-        }
-      });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      return await res.json();
-    } catch (err) {
+    const fetchWithTimeout = async (url, ms = 4500) => {
+      const controller = new AbortController();
+      const id = setTimeout(() => controller.abort(), ms);
       try {
-        let res2 = await fetch(fallbackUrl, {
+        const res = await fetch(url, {
+          signal: controller.signal,
           headers: {
             'apikey': OFFICE_SUPABASE_CONFIG.key,
             'Authorization': `Bearer ${OFFICE_SUPABASE_CONFIG.key}`
           }
         });
-        if (!res2.ok) throw new Error(`Fallback HTTP ${res2.status}`);
-        return await res2.json();
+        clearTimeout(id);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        return await res.json();
+      } catch (err) {
+        clearTimeout(id);
+        throw err;
+      }
+    };
+
+    try {
+      return await fetchWithTimeout(primaryUrl, 4500);
+    } catch (err) {
+      try {
+        return await fetchWithTimeout(fallbackUrl, 4500);
       } catch (err2) {
         console.warn(`[OfficeSupabase] Failed to fetch table ${table}:`, err2);
         return [];
@@ -524,6 +533,16 @@ class OfficeSupabaseAdapter {
 
     // Sort by timestamp descending
     recentEvents.sort((a, b) => new Date(b.timestamp || 0) - new Date(a.timestamp || 0));
+
+    if (recentEvents.length === 0) {
+      this.dom.activityList.innerHTML = `
+        <li class="feed-item" style="color:var(--text-muted); text-align:center; padding: 1.5rem 0.5rem;">
+          <i class="bi bi-check2-circle text-success d-block mb-1" style="font-size:1.2rem;"></i>
+          HC-SUPABASE connected.<br><span style="font-size:0.75rem;">No recent pending activity.</span>
+        </li>
+      `;
+      return;
+    }
 
     recentEvents.slice(0, 14).forEach(evt => {
       const li = document.createElement('li');

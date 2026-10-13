@@ -5610,22 +5610,45 @@ const AppController = {
     const container = document.querySelector('#section-office3d .office-container');
     if (!container) return;
 
-    if (!this.office3dInitialized) {
+    const doInit = async () => {
+      let threeReady = false;
+      let supabaseReady = false;
+
       if (window.HCDSOffice && window.HCDSOffice.initOffice) {
         window.HCDSOffice.initOffice(container);
+        threeReady = true;
       }
       if (window.HCDSOfficeSupabase && window.HCDSOfficeSupabase.init) {
         await window.HCDSOfficeSupabase.init(container);
+        supabaseReady = true;
       }
-      this.office3dInitialized = true;
+
+      if (threeReady || supabaseReady) {
+        this.office3dInitialized = true;
+      } else {
+        // If module scripts are still loading, retry shortly
+        setTimeout(doInit, 150);
+        return;
+      }
+
+      setTimeout(() => {
+        window.dispatchEvent(new Event('resize'));
+        if (window.HCDSOffice && window.HCDSOffice.resetCameraView) {
+          window.HCDSOffice.resetCameraView();
+        }
+      }, 100);
+    };
+
+    if (!this.office3dInitialized) {
+      await doInit();
+    } else {
+      setTimeout(() => {
+        window.dispatchEvent(new Event('resize'));
+        if (window.HCDSOffice && window.HCDSOffice.resetCameraView) {
+          window.HCDSOffice.resetCameraView();
+        }
+      }, 100);
     }
-    
-    setTimeout(() => {
-      window.dispatchEvent(new Event('resize'));
-      if (window.HCDSOffice && window.HCDSOffice.resetCameraView) {
-        window.HCDSOffice.resetCameraView();
-      }
-    }, 100);
   },
 
   showToast(message, typeClass = 'text-primary') {
