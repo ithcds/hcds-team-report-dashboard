@@ -25,8 +25,8 @@ const OFFICE_MEMBERS = {
   },
   'flavio': {
     id: 'flavio',
-    displayName: 'Dr. Flavio',
-    fullName: 'Dr. Flavio Sanchez',
+    displayName: 'dr. Flavio',
+    fullName: 'dr. Flavio Sanchez',
     role: 'CFO & Executive Co-Founder',
     desk: 'Executive Suite',
     color: '#0d9488',

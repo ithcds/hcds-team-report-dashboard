@@ -34,7 +34,7 @@ const TEAM_CONFIG = {
   },
   'flavio': {
     id: 'flavio',
-    name: 'Dr. Flavio',
+    name: 'dr. Flavio',
     role: 'CFO & Executive',
     cluster: 'Executive Suite',
     shirt: '#0d9488',

@@ -182,7 +182,7 @@ class Office2DScene {
       },
       'flavio': {
         key: 'flavio',
-        name: 'Dr. Flavio',
+        name: 'dr. Flavio',
         role: 'CFO & Co-Founder',
         x: 290,
         y: 130,
@@ -1024,8 +1024,13 @@ class Office2DScene {
             if (onBreak < 3) {
               const rand = Math.random();
               let roomType = 'cafeteria';
-              if (rand < 0.35) roomType = 'lounge';
-              else if (rand < 0.60) roomType = 'prayer';
+              if (p.key === 'kusnoto' || p.key === 'flavio') {
+                // Avoid dr. Kusnoto and dr. Flavio visiting prayer room
+                roomType = rand < 0.5 ? 'lounge' : 'cafeteria';
+              } else {
+                if (rand < 0.35) roomType = 'lounge';
+                else if (rand < 0.60) roomType = 'prayer';
+              }
 
               const spots = this.breakSpots[roomType];
               const spot = spots[Math.floor(Math.random() * spots.length)];
@@ -1275,28 +1280,30 @@ class Office2DScene {
   renderWallFurniture(ctx) {
     // 1. Executive Suite Projector Screen
     ctx.fillStyle = '#020617';
-    ctx.fillRect(150, 44, 150, 40);
+    ctx.fillRect(95, 44, 230, 42);
     ctx.strokeStyle = '#0284c7';
     ctx.lineWidth = 1;
-    ctx.strokeRect(150, 44, 150, 40);
+    ctx.strokeRect(95, 44, 230, 42);
     ctx.font = 'bold 8.5px monospace';
     ctx.fillStyle = '#38bdf8';
-    ctx.fillText('HCDS CLINICAL AI ROADMAP', 158, 56);
+    ctx.fillText('HCDS CLINICAL AI ROADMAP', 106, 56);
     ctx.fillStyle = '#4ade80';
-    ctx.fillText('• UIC Ortho • OrthoFX • ADA Codes', 158, 68);
+    ctx.fillText('• UIC Ortho • OrthoFX • ADA Codes', 106, 68);
     ctx.fillStyle = '#facc15';
-    ctx.fillText('• LatAm Billing ($ Stripe Sync)', 158, 79);
+    ctx.fillText('• LatAm Billing ($ Stripe Sync)', 106, 79);
 
     // 2. Chief Architect Blueprint Wall & Espresso Machine
     ctx.fillStyle = '#1e1b4b';
-    ctx.fillRect(520, 46, 120, 36);
+    ctx.fillRect(490, 44, 230, 42);
     ctx.strokeStyle = '#6366f1';
     ctx.lineWidth = 1;
-    ctx.strokeRect(520, 46, 120, 36);
+    ctx.strokeRect(490, 44, 230, 42);
     ctx.font = '8px monospace';
     ctx.fillStyle = '#818cf8';
-    ctx.fillText('CORE SYSTEM ARCHITECTURE', 528, 58);
-    ctx.fillText('⚡ Bolt Engine • Queue Lease Guard', 528, 70);
+    ctx.fillText('CORE SYSTEM ARCHITECTURE', 502, 56);
+    ctx.fillText('⚡ Bolt Engine • Queue Lease Guard', 502, 68);
+    ctx.fillStyle = '#a5b4fc';
+    ctx.fillText('• Distributed Sync • Latency <45ms', 502, 80);
 
     // Master Aryo Espresso Station
     ctx.fillStyle = '#334155';
