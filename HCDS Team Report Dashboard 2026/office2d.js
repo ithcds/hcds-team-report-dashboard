@@ -1710,28 +1710,38 @@ class Office2DScene {
   }
 
   renderPrayerRoomProps(ctx) {
-    // 1. Mihrab / Qibla Wall Arch (North Wall)
-    const mihrabX = 1060;
+    // 1. Mihrab / Qibla Wall Arch (North Wall) - Grand Enlarged Sign Board
+    const mihrabW = 150;
+    const mihrabH = 38;
+    const mihrabX = 1015; // Centered in Prayer Room (x: 930 to 1250)
     const mihrabY = 542;
+
+    // Outer sign board
     ctx.fillStyle = '#064e3b';
-    ctx.fillRect(mihrabX, mihrabY, 60, 20);
+    ctx.fillRect(mihrabX, mihrabY, mihrabW, mihrabH);
     ctx.strokeStyle = '#fbbf24';
-    ctx.lineWidth = 1.5;
-    ctx.strokeRect(mihrabX, mihrabY, 60, 20);
+    ctx.lineWidth = 2.5;
+    ctx.strokeRect(mihrabX, mihrabY, mihrabW, mihrabH);
+
+    // Inner gold decorative frame
+    ctx.strokeStyle = 'rgba(251, 191, 36, 0.5)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(mihrabX + 3, mihrabY + 3, mihrabW - 6, mihrabH - 6);
 
     // Arched dome header inside mihrab
     ctx.fillStyle = '#047857';
     ctx.beginPath();
-    ctx.arc(mihrabX + 30, mihrabY + 18, 18, Math.PI, 0);
+    ctx.arc(mihrabX + (mihrabW / 2), mihrabY + mihrabH - 1, 34, Math.PI, 0);
     ctx.fill();
     ctx.strokeStyle = '#facc15';
+    ctx.lineWidth = 2;
     ctx.stroke();
 
     // Qibla label & arrow
-    ctx.font = 'bold 7.5px system-ui';
+    ctx.font = 'bold 14px system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
     ctx.fillStyle = '#fde047';
     ctx.textAlign = 'center';
-    ctx.fillText('◀ QIBLA', mihrabX + 30, mihrabY + 12);
+    ctx.fillText('◀ QIBLA', mihrabX + (mihrabW / 2), mihrabY + 24);
 
     // 2. Ornate Sajadah (Prayer Mats in 2 rows)
     const matW = 32;
