@@ -23,6 +23,17 @@ const MIME_TYPES = {
 const https = require('https');
 
 const server = http.createServer((req, res) => {
+  // Handle CORS preflight
+  if (req.method === 'OPTIONS') {
+    res.writeHead(204, {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, PATCH, DELETE, OPTIONS',
+      'Access-Control-Allow-Headers': '*'
+    });
+    res.end();
+    return;
+  }
+
   // Supabase proxy for local development CORS bypass
   if (req.url.startsWith('/api/supabase/')) {
     const targetPath = req.url.replace('/api/supabase/', '/rest/v1/');
@@ -49,11 +60,17 @@ const server = http.createServer((req, res) => {
     });
 
     proxyReq.on('error', (e) => {
-      res.writeHead(500, { 'Content-Type': 'application/json' });
+      if (!res.headersSent) {
+        res.writeHead(500, { 'Content-Type': 'application/json' });
+      }
       res.end(JSON.stringify({ error: e.message }));
     });
 
-    req.pipe(proxyReq);
+    if (req.method === 'GET' || req.method === 'HEAD') {
+      proxyReq.end();
+    } else {
+      req.pipe(proxyReq);
+    }
     return;
   }
 

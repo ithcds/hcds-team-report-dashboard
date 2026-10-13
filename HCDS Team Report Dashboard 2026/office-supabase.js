@@ -191,6 +191,8 @@ const OFFICE_CLUSTERS = [
     badge: 'Growth & Partners',
     members: ['ary']
   }
+];
+
 // Helper to filter out excluded recipient reminders
 function isExcludedReminder(r) {
   if (!r) return false;
@@ -232,6 +234,19 @@ class OfficeSupabaseAdapter {
     this.bindDomElements();
     this.initSupabaseClient();
     this.setupInteractivity();
+
+    // Render immediately with any already-cached or local tasks/reminders
+    if (window.DatabaseService && typeof window.DatabaseService.getAllTasks === 'function') {
+      try {
+        const localTasks = window.DatabaseService.getAllTasks();
+        if (localTasks && localTasks.length > 0) this.tasks = localTasks;
+      } catch (e) {}
+    }
+    if (window.AppController && Array.isArray(window.AppController.remindersData) && window.AppController.remindersData.length > 0) {
+      this.reminders = window.AppController.remindersData.filter(r => !isExcludedReminder(r));
+    }
+    this.processData();
+    this.renderAll();
 
     await this.fetchInitialData();
     this.subscribeRealtime();
@@ -291,8 +306,14 @@ class OfficeSupabaseAdapter {
   }
 
   initSupabaseClient() {
+    if (window.CloudSyncService && window.CloudSyncService.supabase) {
+      this.client = window.CloudSyncService.supabase;
+      return;
+    }
     if (typeof supabase !== 'undefined' && supabase.createClient) {
-      this.client = supabase.createClient(OFFICE_SUPABASE_CONFIG.url, OFFICE_SUPABASE_CONFIG.key);
+      this.client = supabase.createClient(OFFICE_SUPABASE_CONFIG.url, OFFICE_SUPABASE_CONFIG.key, {
+        auth: { persistSession: false, autoRefreshToken: false }
+      });
     } else {
       console.warn('[OfficeSupabase] Supabase JS SDK not loaded, using REST fallback.');
     }
@@ -301,15 +322,16 @@ class OfficeSupabaseAdapter {
   async fetchInitialData() {
     try {
       const [tasksRes, remindersRes, contactsRes] = await Promise.all([
-        this.queryTable('team_tasks', 'select=*&order=updated_at.desc&limit=100'),
-        this.queryTable('team_reminders', 'select=*&order=remind_at.desc&limit=50'),
-        this.queryTable('team_contact', 'select=*')
+        this.queryTable('team_tasks', 'select=*&order=updated_at.desc&limit=100').catch(() => []),
+        this.queryTable('team_reminders', 'select=*&order=remind_at.desc&limit=50').catch(() => []),
+        this.queryTable('team_contact', 'select=*').catch(() => [])
       ]);
 
-      this.tasks = (Array.isArray(tasksRes) && tasksRes.length > 0) ? tasksRes : (this.tasks || []);
-      const rawReminders = (Array.isArray(remindersRes) && remindersRes.length > 0) ? remindersRes : (this.reminders || []);
-      this.reminders = rawReminders.filter(r => !isExcludedReminder(r));
-      this.contacts = (Array.isArray(contactsRes) && contactsRes.length > 0) ? contactsRes : (this.contacts || []);
+      if (Array.isArray(tasksRes) && tasksRes.length > 0) this.tasks = tasksRes;
+      if (Array.isArray(remindersRes) && remindersRes.length > 0) {
+        this.reminders = remindersRes.filter(r => !isExcludedReminder(r));
+      }
+      if (Array.isArray(contactsRes) && contactsRes.length > 0) this.contacts = contactsRes;
 
       this.processData();
       this.renderAll();
@@ -329,11 +351,30 @@ class OfficeSupabaseAdapter {
       } catch (e) {}
     }
 
+    if (table === 'team_reminders' && window.AppController && Array.isArray(window.AppController.remindersData) && window.AppController.remindersData.length > 0) {
+      return window.AppController.remindersData.filter(r => !isExcludedReminder(r));
+    }
+
+    // 2. Direct Supabase SDK client (handles CORS automatically)
+    const activeClient = (window.CloudSyncService && window.CloudSyncService.supabase) || this.client;
+    if (activeClient && typeof activeClient.from === 'function') {
+      try {
+        let q = activeClient.from(table).select('*');
+        if (table === 'team_tasks') q = q.order('updated_at', { ascending: false }).limit(100);
+        else if (table === 'team_reminders') q = q.order('remind_at', { ascending: false }).limit(50);
+        const { data, error } = await q;
+        if (!error && Array.isArray(data) && data.length > 0) {
+          if (table === 'team_reminders') return data.filter(r => !isExcludedReminder(r));
+          return data;
+        }
+      } catch (e) {}
+    }
+
     const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
     const primaryUrl = isLocal ? `/api/supabase/${table}?${query}` : `${OFFICE_SUPABASE_CONFIG.url}/rest/v1/${table}?${query}`;
     const fallbackUrl = isLocal ? `${OFFICE_SUPABASE_CONFIG.url}/rest/v1/${table}?${query}` : `/api/supabase/${table}?${query}`;
 
-    const fetchWithTimeout = async (url, ms = 4500) => {
+    const fetchWithTimeout = async (url, ms = 2500) => {
       const controller = new AbortController();
       const id = setTimeout(() => controller.abort(), ms);
       try {
@@ -358,10 +399,10 @@ class OfficeSupabaseAdapter {
     };
 
     try {
-      return await fetchWithTimeout(primaryUrl, 4500);
+      return await fetchWithTimeout(primaryUrl, 2500);
     } catch (err) {
       try {
-        return await fetchWithTimeout(fallbackUrl, 4500);
+        return await fetchWithTimeout(fallbackUrl, 2500);
       } catch (err2) {
         console.warn(`[OfficeSupabase] Failed to fetch table ${table}:`, err2);
         return [];
