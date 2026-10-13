@@ -718,6 +718,8 @@
       z-index: 899;
     }
     .sidebar-overlay.show { display: block; }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+    .spin { display: inline-block; animation: spin 1s linear infinite; }
   </style>
 </head>
 <body>
@@ -745,6 +747,9 @@
     </button>
     <button class="nav-link-custom" data-section="personnel" id="nav-personnel">
       <i class="bi bi-people-fill"></i> Team Workload
+    </button>
+    <button class="nav-link-custom" data-section="reminders" id="nav-reminders">
+      <i class="bi bi-alarm-fill"></i> WAHA Reminders
     </button>
 
     <div class="nav-section-label">Product Matrices</div>
@@ -1124,6 +1129,191 @@
           </div>
         </div>
       </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════
+         SECTION: WAHA REMINDERS & AUTOMATED TASKS
+    ══════════════════════════════════════════ -->
+    <div id="section-reminders" class="d-none">
+      
+      <!-- Top Stat Strip (KPI Cards) -->
+      <div class="row g-3 mb-4">
+        <div class="col-sm-6 col-xl-3">
+          <div class="stat-card" style="border-left: 4px solid var(--primary);">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <div class="stat-card-label">Total Reminders</div>
+                <div class="stat-card-value text-primary" id="kpiRemindersTotal">0</div>
+                <div class="stat-card-sub text-muted">Active in HC-SUPABASE</div>
+              </div>
+              <div class="stat-card-icon" style="background:#eff6ff; color:var(--primary); font-size:1.4rem; padding:0.75rem; border-radius:8px;">
+                <i class="bi bi-bell-fill"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-6 col-xl-3">
+          <div class="stat-card" style="border-left: 4px solid #6366f1;">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <div class="stat-card-label">🔁 Recurring Schedules</div>
+                <div class="stat-card-value" style="color:#4f46e5;" id="kpiRemindersRecurring">0</div>
+                <div class="stat-card-sub text-muted" id="kpiRemindersRecurringSub">Standing routines</div>
+              </div>
+              <div class="stat-card-icon" style="background:#eef2ff; color:#4f46e5; font-size:1.4rem; padding:0.75rem; border-radius:8px;">
+                <i class="bi bi-arrow-repeat"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-6 col-xl-3">
+          <div class="stat-card" style="border-left: 4px solid #0284c7;">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <div class="stat-card-label">⏱️ One-Time Alerts</div>
+                <div class="stat-card-value text-info" id="kpiRemindersOneTime">0</div>
+                <div class="stat-card-sub text-muted" id="kpiRemindersOneTimeSub">Single-shot alerts</div>
+              </div>
+              <div class="stat-card-icon" style="background:#f0f9ff; color:#0284c7; font-size:1.4rem; padding:0.75rem; border-radius:8px;">
+                <i class="bi bi-clock-history"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-sm-6 col-xl-3">
+          <div class="stat-card" style="border-left: 4px solid #10b981;">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <div class="stat-card-label">Dispatched / Sent</div>
+                <div class="stat-card-value text-success" id="kpiRemindersSent">0</div>
+                <div class="stat-card-sub text-muted" id="kpiRemindersPendingSub">0 pending delivery</div>
+              </div>
+              <div class="stat-card-icon" style="background:#ecfdf5; color:#10b981; font-size:1.4rem; padding:0.75rem; border-radius:8px;">
+                <i class="bi bi-check2-circle"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Controls & Filter Toolbar Card -->
+      <div class="app-card mb-4">
+        <div class="app-card-body py-3">
+          <div class="d-flex flex-wrap align-items-center justify-content-between gap-3">
+            <!-- Left: Type Filter Pills -->
+            <div class="btn-group btn-group-sm" role="group" aria-label="Reminder Type Tabs">
+              <button type="button" class="btn btn-outline-primary active" id="btnTabRemindersAll" onclick="AppController.setRemindersTypeTab('all')">
+                <i class="bi bi-list-ul me-1"></i>All (<span id="tabCountAll">0</span>)
+              </button>
+              <button type="button" class="btn btn-outline-primary" id="btnTabRemindersRecurring" onclick="AppController.setRemindersTypeTab('recurring')">
+                <i class="bi bi-arrow-repeat me-1"></i>Recurring (<span id="tabCountRecurring">0</span>)
+              </button>
+              <button type="button" class="btn btn-outline-primary" id="btnTabRemindersOneTime" onclick="AppController.setRemindersTypeTab('onetime')">
+                <i class="bi bi-clock me-1"></i>One-Time (<span id="tabCountOneTime">0</span>)
+              </button>
+            </div>
+
+            <!-- Middle: Search, Status & Recipient Filters -->
+            <div class="d-flex flex-wrap align-items-center gap-2">
+              <div class="input-group input-group-sm" style="width: 220px;">
+                <span class="input-group-text bg-light"><i class="bi bi-search"></i></span>
+                <input type="text" class="form-control" id="remindersSearchInput" placeholder="Search reminder text…" oninput="AppController.filterReminders()" />
+              </div>
+
+              <select class="form-select form-select-sm" style="width: 140px;" id="remindersStatusFilter" onchange="AppController.filterReminders()">
+                <option value="">All Statuses</option>
+                <option value="pending">Pending</option>
+                <option value="sent">Sent</option>
+                <option value="cancelled">Cancelled</option>
+              </select>
+
+              <select class="form-select form-select-sm" style="width: 160px;" id="remindersRecipientFilter" onchange="AppController.filterReminders()">
+                <option value="">All Recipients</option>
+                <!-- Populated dynamically -->
+              </select>
+            </div>
+
+            <!-- Right: Live sync info & Refresh button -->
+            <div class="d-flex align-items-center gap-2">
+              <span class="badge bg-light text-secondary border d-none d-md-inline" id="remindersSyncBadge">
+                <i class="bi bi-broadcast text-success me-1"></i>HC-SUPABASE
+              </span>
+              <button class="btn btn-sm btn-corporate-outline" onclick="AppController.renderReminders(true)">
+                <i class="bi bi-arrow-clockwise me-1" id="iconRemindersRefresh"></i>Refresh
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Container: Recurring Reminders Card (Visible in 'all' and 'recurring' tabs) -->
+      <div class="app-card mb-4" id="cardRecurringReminders">
+        <div class="app-card-header">
+          <div class="app-card-title d-flex align-items-center gap-2">
+            <span class="badge" style="background:#e0e7ff; color:#4338ca; border:1px solid #c7d2fe; font-size:0.75rem; padding:0.35rem 0.6rem;">
+              <i class="bi bi-arrow-repeat me-1"></i>RECURRING
+            </span>
+            <span>Recurring Schedules & Standing Routines</span>
+          </div>
+          <span class="text-muted small">Auto-monitored & dispatched periodically by HC-WAHA Poller</span>
+        </div>
+        <div class="app-card-body p-0">
+          <div class="table-responsive">
+            <table class="corporate-table" id="tableRecurringReminders">
+              <thead>
+                <tr>
+                  <th style="width: 130px;">Cadence</th>
+                  <th style="width: 170px;">Target Recipient</th>
+                  <th>Reminder Instruction / Task</th>
+                  <th style="width: 130px;">Task Type</th>
+                  <th style="width: 190px;">Next Trigger (WIB)</th>
+                  <th style="width: 140px;">Stats & History</th>
+                  <th style="width: 110px;">Status</th>
+                </tr>
+              </thead>
+              <tbody id="bodyRecurringReminders">
+                <!-- Dynamically injected -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Container: One-Time Reminders Card (Visible in 'all' and 'onetime' tabs) -->
+      <div class="app-card mb-4" id="cardOneTimeReminders">
+        <div class="app-card-header">
+          <div class="app-card-title d-flex align-items-center gap-2">
+            <span class="badge" style="background:#e0f2fe; color:#0369a1; border:1px solid #bae6fd; font-size:0.75rem; padding:0.35rem 0.6rem;">
+              <i class="bi bi-clock me-1"></i>ONE-TIME
+            </span>
+            <span>One-Time Reminders & Alert Queue</span>
+          </div>
+          <span class="text-muted small">Single execution notifications & deadlines</span>
+        </div>
+        <div class="app-card-body p-0">
+          <div class="table-responsive">
+            <table class="corporate-table" id="tableOneTimeReminders">
+              <thead>
+                <tr>
+                  <th style="width: 190px;">Scheduled At (WIB)</th>
+                  <th style="width: 170px;">Recipient</th>
+                  <th>Reminder Content</th>
+                  <th style="width: 130px;">Task Type</th>
+                  <th style="width: 190px;">Dispatched At</th>
+                  <th style="width: 110px;">Status</th>
+                </tr>
+              </thead>
+              <tbody id="bodyOneTimeReminders">
+                <!-- Dynamically injected -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <!-- ══════════════════════════════════════════
@@ -4348,6 +4538,8 @@ const AppController = {
   activeMemberFilter: '',
   activeProductFilter: '',
   searchQuery: '',
+  remindersData: [],
+  remindersActiveTab: 'all',
   taskModalInstance: null,
   deleteModalInstance: null,
   cloudModalInstance: null,
@@ -4808,6 +5000,7 @@ const AppController = {
     this.renderTasksTable();
     this.renderPersonnelWorkloadTable();
     this.renderPersonnelWeeklyReportTable();
+    this.renderReminders();
     this.renderISmartOfficeMatrices();
     this.renderEnterpriseMatrices();
     this.renderAnnieMatrices();
@@ -5241,11 +5434,12 @@ const AppController = {
   },
 
   showSection(name) {
-    const sections = ['summary', 'tasks', 'personnel', 'ismartoffice', 'enterpriseapps', 'annie', 'bigdata', 'highlights'];
+    const sections = ['summary', 'tasks', 'personnel', 'reminders', 'ismartoffice', 'enterpriseapps', 'annie', 'bigdata', 'highlights'];
     const titles = {
       summary: { title: 'Executive Overview', sub: 'High-level activity summary & delivery metrics' },
       tasks: { title: 'Daily Team Tasks', sub: 'Interactive sprint backlog with SQLite WASM persistence' },
       personnel: { title: 'Personnel Allocation & Reports', sub: 'Team capacity distribution & weekly deliverables' },
+      reminders: { title: 'WAHA Reminders & Automation', sub: 'Real-time scheduled alerts, recurring routines & agent tasks from HC-SUPABASE' },
       ismartoffice: { title: 'iSmartOffice Matrix', sub: 'Patient, Clinic, Provider, and Web Clinic feature verification' },
       enterpriseapps: { title: 'Enterprise Deployments', sub: 'AllCare Ortho, FMBO Bioprogressive, and Sphinx QA verification' },
       annie: { title: 'Annie Insights Product Matrix', sub: 'AI diagnostic classification, cephalometrics, and reporting' },
@@ -5281,6 +5475,10 @@ const AppController = {
     if (sb && ov) {
       sb.classList.remove('open');
       ov.classList.remove('show');
+    }
+
+    if (name === 'reminders') {
+      this.renderReminders();
     }
   },
 
@@ -5742,6 +5940,295 @@ const AppController = {
       `;
       tbody.appendChild(tr);
     });
+  },
+
+  setRemindersTypeTab(tab) {
+    this.remindersActiveTab = tab;
+    ['All', 'Recurring', 'OneTime'].forEach(t => {
+      const btn = document.getElementById(`btnTabReminders${t}`);
+      if (btn) {
+        if (t.toLowerCase() === tab.toLowerCase()) {
+          btn.classList.add('active');
+        } else {
+          btn.classList.remove('active');
+        }
+      }
+    });
+
+    const cardRecurring = document.getElementById('cardRecurringReminders');
+    const cardOneTime = document.getElementById('cardOneTimeReminders');
+
+    if (cardRecurring && cardOneTime) {
+      if (tab === 'all') {
+        cardRecurring.classList.remove('d-none');
+        cardOneTime.classList.remove('d-none');
+      } else if (tab === 'recurring') {
+        cardRecurring.classList.remove('d-none');
+        cardOneTime.classList.add('d-none');
+      } else if (tab === 'onetime') {
+        cardRecurring.classList.add('d-none');
+        cardOneTime.classList.remove('d-none');
+      }
+    }
+
+    this.filterReminders();
+  },
+
+  async renderReminders(forceRefresh = false) {
+    const refreshIcon = document.getElementById('iconRemindersRefresh');
+    if (refreshIcon) refreshIcon.classList.add('spin');
+
+    try {
+      if (this.remindersData.length === 0 || forceRefresh) {
+        let client = CloudSyncService.isConnected && CloudSyncService.supabase
+          ? CloudSyncService.supabase : null;
+        if (!client && typeof DEFAULT_CLOUD_CONFIG !== 'undefined' && DEFAULT_CLOUD_CONFIG.supabaseUrl && DEFAULT_CLOUD_CONFIG.supabaseKey) {
+          const { createClient } = supabase;
+          client = createClient(DEFAULT_CLOUD_CONFIG.supabaseUrl, DEFAULT_CLOUD_CONFIG.supabaseKey);
+        }
+
+        if (client) {
+          const { data, error } = await client
+            .from('team_reminders')
+            .select('*')
+            .order('remind_at', { ascending: false });
+
+          if (!error && data) {
+            this.remindersData = data;
+          } else {
+            console.warn('Supabase team_reminders fetch error:', error);
+          }
+        }
+      }
+
+      this.updateRemindersKPIs();
+      this.populateRemindersRecipientFilter();
+      this.filterReminders();
+
+      const syncBadge = document.getElementById('remindersSyncBadge');
+      if (syncBadge) {
+        const now = new Date();
+        syncBadge.innerHTML = `<i class="bi bi-broadcast text-success me-1"></i>Live (${now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})})`;
+      }
+    } catch(err) {
+      console.warn('Error rendering reminders:', err);
+    } finally {
+      if (refreshIcon) refreshIcon.classList.remove('spin');
+    }
+  },
+
+  updateRemindersKPIs() {
+    const data = this.remindersData || [];
+    const total = data.length;
+    const recurring = data.filter(r => r.is_recurring === true);
+    const oneTime = data.filter(r => !r.is_recurring);
+    const sent = data.filter(r => (r.status || '').toLowerCase() === 'sent');
+    const pending = data.filter(r => (r.status || '').toLowerCase() === 'pending');
+    const cancelled = data.filter(r => (r.status || '').toLowerCase() === 'cancelled' || (r.status || '').toLowerCase() === 'canceled');
+
+    const elTotal = document.getElementById('kpiRemindersTotal');
+    const elRec = document.getElementById('kpiRemindersRecurring');
+    const elRecSub = document.getElementById('kpiRemindersRecurringSub');
+    const elOne = document.getElementById('kpiRemindersOneTime');
+    const elOneSub = document.getElementById('kpiRemindersOneTimeSub');
+    const elSent = document.getElementById('kpiRemindersSent');
+    const elPendSub = document.getElementById('kpiRemindersPendingSub');
+
+    const tabAll = document.getElementById('tabCountAll');
+    const tabRec = document.getElementById('tabCountRecurring');
+    const tabOne = document.getElementById('tabCountOneTime');
+
+    if (elTotal) elTotal.textContent = total;
+    if (elRec) elRec.textContent = recurring.length;
+    if (elRecSub) elRecSub.textContent = `${recurring.filter(r => (r.status || '').toLowerCase() === 'pending').length} active cadence`;
+    if (elOne) elOne.textContent = oneTime.length;
+    if (elOneSub) elOneSub.textContent = `${oneTime.filter(r => (r.status || '').toLowerCase() === 'pending').length} pending`;
+    if (elSent) elSent.textContent = sent.length;
+    if (elPendSub) elPendSub.textContent = `${pending.length} pending · ${cancelled.length} cancelled`;
+
+    if (tabAll) tabAll.textContent = total;
+    if (tabRec) tabRec.textContent = recurring.length;
+    if (tabOne) tabOne.textContent = oneTime.length;
+  },
+
+  populateRemindersRecipientFilter() {
+    const select = document.getElementById('remindersRecipientFilter');
+    if (!select) return;
+    const currentVal = select.value;
+    const recipients = Array.from(new Set(this.remindersData.map(r => r.recipient_name || r.phone_number).filter(Boolean))).sort();
+    
+    let html = '<option value="">All Recipients</option>';
+    recipients.forEach(name => {
+      html += `<option value="${this.escapeHtml(name)}" ${name === currentVal ? 'selected' : ''}>${this.escapeHtml(name)}</option>`;
+    });
+    select.innerHTML = html;
+  },
+
+  filterReminders() {
+    const search = (document.getElementById('remindersSearchInput')?.value || '').toLowerCase().trim();
+    const statusFilter = (document.getElementById('remindersStatusFilter')?.value || '').toLowerCase();
+    const recipientFilter = document.getElementById('remindersRecipientFilter')?.value || '';
+
+    let filtered = (this.remindersData || []).filter(item => {
+      if (statusFilter && (item.status || '').toLowerCase() !== statusFilter) return false;
+      if (recipientFilter && (item.recipient_name !== recipientFilter && item.phone_number !== recipientFilter)) return false;
+      if (search) {
+        const text = (item.reminder_text || '').toLowerCase();
+        const recipient = (item.recipient_name || '').toLowerCase();
+        const phone = (item.phone_number || '').toLowerCase();
+        const rule = (item.recurrence_rule || '').toLowerCase();
+        const taskType = (item.task_type || '').toLowerCase();
+        if (!text.includes(search) && !recipient.includes(search) && !phone.includes(search) && !rule.includes(search) && !taskType.includes(search)) {
+          return false;
+        }
+      }
+      return true;
+    });
+
+    const recurringItems = filtered.filter(r => r.is_recurring === true);
+    const oneTimeItems = filtered.filter(r => !r.is_recurring);
+
+    this.renderRecurringRemindersTable(recurringItems);
+    this.renderOneTimeRemindersTable(oneTimeItems);
+  },
+
+  renderRecurringRemindersTable(items) {
+    const tbody = document.getElementById('bodyRecurringReminders');
+    if (!tbody) return;
+
+    if (!items || items.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-muted"><i class="bi bi-inbox me-2"></i>No recurring schedules found matching criteria.</td></tr>`;
+      return;
+    }
+
+    let html = '';
+    items.forEach(r => {
+      const rule = (r.recurrence_rule || 'Daily').toUpperCase();
+      const statusBadge = this.renderReminderStatusBadge(r.status);
+      const taskTypeBadge = this.renderReminderTaskTypeBadge(r.task_type);
+      const recipientBadge = this.renderReminderRecipientBadge(r.recipient_name, r.phone_number);
+      const nextTime = this.formatReminderDateTime(r.remind_at);
+      const count = r.recurrence_count || 0;
+      const lastReminded = r.last_reminded_at ? this.formatReminderDateTime(r.last_reminded_at) : 'Not triggered yet';
+
+      html += `
+        <tr>
+          <td>
+            <span class="badge" style="background:#e0e7ff; color:#3730a3; border:1px solid #c7d2fe; font-weight:700; letter-spacing:0.04em; font-size:0.75rem;">
+              <i class="bi bi-arrow-repeat me-1"></i>${this.escapeHtml(rule)}
+            </span>
+          </td>
+          <td>${recipientBadge}</td>
+          <td>
+            <div class="fw-semibold text-dark mb-1" style="font-size:0.85rem; line-height:1.4;">${this.escapeHtml(r.reminder_text)}</div>
+            <div class="text-muted small"><i class="bi bi-calendar-event me-1"></i>Start: ${this.formatReminderDateTime(r.created_at)} ${r.recurrence_end ? '· End: ' + this.formatReminderDateTime(r.recurrence_end) : '· Standing'}</div>
+          </td>
+          <td>${taskTypeBadge}</td>
+          <td>
+            <div class="fw-semibold text-primary" style="font-size:0.82rem;"><i class="bi bi-alarm me-1"></i>${nextTime}</div>
+            <div class="text-muted" style="font-size:0.7rem;">Timezone: ${this.escapeHtml(r.timezone || 'Asia/Jakarta')}</div>
+          </td>
+          <td>
+            <span class="badge bg-light text-secondary border"><i class="bi bi-check2-all me-1"></i>${count}x run</span>
+            <div class="text-muted mt-1" style="font-size:0.7rem;">Last: ${lastReminded}</div>
+          </td>
+          <td>${statusBadge}</td>
+        </tr>
+      `;
+    });
+    tbody.innerHTML = html;
+  },
+
+  renderOneTimeRemindersTable(items) {
+    const tbody = document.getElementById('bodyOneTimeReminders');
+    if (!tbody) return;
+
+    if (!items || items.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="6" class="text-center py-4 text-muted"><i class="bi bi-inbox me-2"></i>No one-time reminders found matching criteria.</td></tr>`;
+      return;
+    }
+
+    let html = '';
+    items.forEach(r => {
+      const statusBadge = this.renderReminderStatusBadge(r.status);
+      const taskTypeBadge = this.renderReminderTaskTypeBadge(r.task_type);
+      const recipientBadge = this.renderReminderRecipientBadge(r.recipient_name, r.phone_number);
+      const remindAtTime = this.formatReminderDateTime(r.remind_at);
+      const sentAtTime = r.sent_at ? this.formatReminderDateTime(r.sent_at) : '—';
+
+      html += `
+        <tr>
+          <td>
+            <div class="fw-semibold text-dark" style="font-size:0.83rem;"><i class="bi bi-clock me-1 text-primary"></i>${remindAtTime}</div>
+            <div class="text-muted" style="font-size:0.7rem;">Created: ${this.formatReminderDateTime(r.created_at)}</div>
+          </td>
+          <td>${recipientBadge}</td>
+          <td>
+            <div class="fw-semibold text-dark" style="font-size:0.85rem; line-height:1.4;">${this.escapeHtml(r.reminder_text)}</div>
+          </td>
+          <td>${taskTypeBadge}</td>
+          <td>
+            <div class="text-secondary small">${sentAtTime}</div>
+          </td>
+          <td>${statusBadge}</td>
+        </tr>
+      `;
+    });
+    tbody.innerHTML = html;
+  },
+
+  renderReminderStatusBadge(status) {
+    const s = (status || '').toLowerCase();
+    if (s === 'sent') {
+      return `<span class="status-badge status-badge-complete"><i class="bi bi-check2-circle me-1"></i>Sent</span>`;
+    } else if (s === 'pending') {
+      return `<span class="status-badge status-badge-on-progress" style="background:#fef3c7; color:#92400e; border-color:#fcd34d;"><i class="bi bi-hourglass-split me-1"></i>Pending</span>`;
+    } else if (s === 'cancelled' || s === 'canceled') {
+      return `<span class="status-badge status-badge-cancel"><i class="bi bi-x-circle me-1"></i>Cancelled</span>`;
+    }
+    return `<span class="status-badge status-badge-pending">${this.escapeHtml(status || 'Unknown')}</span>`;
+  },
+
+  renderReminderTaskTypeBadge(type) {
+    if (type === 'agent_task') {
+      return `<span class="badge" style="background:#1e293b; color:#f8fafc; font-size:0.7rem; border-radius:4px;"><i class="bi bi-robot me-1 text-info"></i>Agent Task</span>`;
+    }
+    return `<span class="badge bg-light text-secondary border" style="font-size:0.7rem; border-radius:4px;"><i class="bi bi-chat-text me-1"></i>Notification</span>`;
+  },
+
+  renderReminderRecipientBadge(name, phone) {
+    const initial = (name || 'U').charAt(0).toUpperCase();
+    return `
+      <div class="d-flex align-items-center gap-2">
+        <div style="width:28px; height:28px; border-radius:50%; background:#e2e8f0; color:#1e293b; font-weight:700; font-size:0.75rem; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+          ${initial}
+        </div>
+        <div>
+          <div class="fw-semibold" style="font-size:0.83rem; color:var(--text-main);">${this.escapeHtml(name || 'Unknown')}</div>
+          <div class="text-muted" style="font-size:0.7rem;">${phone ? this.escapeHtml(phone) : ''}</div>
+        </div>
+      </div>
+    `;
+  },
+
+  formatReminderDateTime(isoStr) {
+    if (!isoStr) return '—';
+    try {
+      const d = new Date(isoStr);
+      if (isNaN(d.getTime())) return isoStr;
+      return d.toLocaleString('en-US', {
+        timeZone: 'Asia/Jakarta',
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+      }) + ' WIB';
+    } catch(e) {
+      return isoStr;
+    }
   }
 };
 
