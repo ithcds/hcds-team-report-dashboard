@@ -25,7 +25,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
 
   <!-- 3D Virtual Office Stylesheet -->
-  <link rel="stylesheet" href="office.css" />
+  <link rel="stylesheet" href="office.css?v=20261013d" />
 
   <!-- sql.js (WebAssembly SQLite in Browser) -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.12.0/sql-wasm.js"></script>
@@ -721,8 +721,60 @@
       z-index: 899;
     }
     .sidebar-overlay.show { display: block; }
-    @keyframes spin { 100% { transform: rotate(360deg); } }
-    .spin { display: inline-block; animation: spin 1s linear infinite; }
+    /* Fullscreen Immersion when Virtual Office is active */
+    html:has(body.office-fullscreen),
+    body.office-fullscreen {
+      overflow: hidden !important;
+      width: 100vw !important;
+      height: 100vh !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      background: #090d16 !important;
+    }
+    body.office-fullscreen #sidebar,
+    body.office-fullscreen #sidebarOverlay,
+    body.office-fullscreen .topbar {
+      display: none !important;
+    }
+    body.office-fullscreen .main-content,
+    body.office-fullscreen .page-content {
+      margin: 0 !important;
+      padding: 0 !important;
+      width: 100vw !important;
+      max-width: 100vw !important;
+      height: 100vh !important;
+      max-height: 100vh !important;
+      overflow: hidden !important;
+      background: #090d16 !important;
+    }
+    body.office-fullscreen #section-office3d {
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      bottom: 0 !important;
+      width: 100vw !important;
+      max-width: 100vw !important;
+      height: 100vh !important;
+      max-height: 100vh !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      z-index: 9999 !important;
+      overflow: hidden !important;
+      background: #090d16 !important;
+    }
+    body.office-fullscreen #section-office3d .office-container {
+      width: 100vw !important;
+      max-width: 100vw !important;
+      height: 100vh !important;
+      min-height: 100vh !important;
+      max-height: 100vh !important;
+      border-radius: 0 !important;
+      border: none !important;
+      box-shadow: none !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
   </style>
 </head>
 <body>
