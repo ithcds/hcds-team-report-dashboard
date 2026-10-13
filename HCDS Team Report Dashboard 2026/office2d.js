@@ -117,19 +117,41 @@ class Office2DScene {
       },
       {
         id: 'lounge',
-        title: 'Coffee Lounge & Garden Patio',
-        subtitle: 'Espresso Bar, Beanbags & Oyen Cat',
-        x: 140,
+        title: 'Coffee Lounge & Garden',
+        subtitle: 'Espresso Bar, Sofa & Oyen Cat',
+        x: 30,
         y: 540,
-        w: 1000,
+        w: 380,
         h: 230,
         floorType: 'wood_light',
         borderColor: '#f59e0b'
+      },
+      {
+        id: 'cafeteria',
+        title: 'HCDS Cafeteria & Pantry',
+        subtitle: 'Dining Tables, Refreshments & Buffet',
+        x: 440,
+        y: 540,
+        w: 460,
+        h: 230,
+        floorType: 'checkered_tile',
+        borderColor: '#10b981'
+      },
+      {
+        id: 'prayer',
+        title: 'Prayer Room (Musholla)',
+        subtitle: 'Serene Space for Solat & Reflection',
+        x: 930,
+        y: 540,
+        w: 320,
+        h: 230,
+        floorType: 'carpet_emerald',
+        borderColor: '#0d9488'
       }
     ];
 
     // ─────────────────────────────────────────────────────────────
-    // Personnel Desks & Sprites (Guaranteed Wide Spacing)
+    // Personnel Desks & Sprites with Dynamic Break States
     // ─────────────────────────────────────────────────────────────
     this.personnel = {
       'kusnoto': {
@@ -138,6 +160,8 @@ class Office2DScene {
         role: 'CEO & Co-Founder',
         x: 130,
         y: 130,
+        homeX: 130,
+        homeY: 130,
         deskX: 100,
         deskY: 152,
         deskW: 72,
@@ -148,7 +172,13 @@ class Office2DScene {
         pants: '#334155',
         status: 'idle',
         activeTask: 'Executive Strategy & UIC Orthodontics Clinical Roadmap',
-        direction: 'down'
+        direction: 'down',
+        state: 'desk',
+        actionTimer: 450,
+        waypoints: [],
+        isWalking: false,
+        walkSpeed: 1.6,
+        thought: { text: '', timer: 0, maxTimer: 220, opacity: 0 }
       },
       'flavio': {
         key: 'flavio',
@@ -156,6 +186,8 @@ class Office2DScene {
         role: 'CFO & Co-Founder',
         x: 290,
         y: 130,
+        homeX: 290,
+        homeY: 130,
         deskX: 260,
         deskY: 152,
         deskW: 72,
@@ -166,7 +198,13 @@ class Office2DScene {
         pants: '#1e293b',
         status: 'idle',
         activeTask: 'Financial Analysis & Stripe Billing Overview',
-        direction: 'down'
+        direction: 'down',
+        state: 'desk',
+        actionTimer: 680,
+        waypoints: [],
+        isWalking: false,
+        walkSpeed: 1.6,
+        thought: { text: '', timer: 0, maxTimer: 220, opacity: 0 }
       },
       'aryo': {
         key: 'aryo',
@@ -174,6 +212,8 @@ class Office2DScene {
         role: 'Chief System Architect',
         x: 640,
         y: 130,
+        homeX: 640,
+        homeY: 130,
         deskX: 590,
         deskY: 152,
         deskW: 105,
@@ -184,7 +224,13 @@ class Office2DScene {
         pants: '#1e1b4b',
         status: 'working',
         activeTask: 'Investigasi & Mitigasi Kendala Sistem Printing Annie',
-        direction: 'down'
+        direction: 'down',
+        state: 'desk',
+        actionTimer: 520,
+        waypoints: [],
+        isWalking: false,
+        walkSpeed: 1.6,
+        thought: { text: '', timer: 0, maxTimer: 220, opacity: 0 }
       },
       'ringo': {
         key: 'ringo',
@@ -192,6 +238,8 @@ class Office2DScene {
         role: 'Senior Tech Lead & Infra Admin',
         x: 1050,
         y: 130,
+        homeX: 1050,
+        homeY: 130,
         deskX: 1010,
         deskY: 152,
         deskW: 85,
@@ -202,7 +250,13 @@ class Office2DScene {
         pants: '#1e293b',
         status: 'working',
         activeTask: 'Upgrade 4 Azure Burst Print VMs',
-        direction: 'down'
+        direction: 'down',
+        state: 'desk',
+        actionTimer: 740,
+        waypoints: [],
+        isWalking: false,
+        walkSpeed: 1.6,
+        thought: { text: '', timer: 0, maxTimer: 220, opacity: 0 }
       },
       'acid': {
         key: 'acid',
@@ -210,6 +264,8 @@ class Office2DScene {
         role: 'iSmartOffice Team Lead',
         x: 95,
         y: 380,
+        homeX: 95,
+        homeY: 380,
         deskX: 65,
         deskY: 402,
         deskW: 68,
@@ -220,7 +276,13 @@ class Office2DScene {
         pants: '#4c0519',
         status: 'working',
         activeTask: 'Review Mobile App Bug Backlog (#12, #14, #16)',
-        direction: 'down'
+        direction: 'down',
+        state: 'desk',
+        actionTimer: 360,
+        waypoints: [],
+        isWalking: false,
+        walkSpeed: 1.6,
+        thought: { text: '', timer: 0, maxTimer: 220, opacity: 0 }
       },
       'rangga': {
         key: 'rangga',
@@ -228,6 +290,8 @@ class Office2DScene {
         role: 'Clinical Finding UI Dev',
         x: 230,
         y: 380,
+        homeX: 230,
+        homeY: 380,
         deskX: 200,
         deskY: 402,
         deskW: 68,
@@ -238,7 +302,13 @@ class Office2DScene {
         pants: '#27272a',
         status: 'working',
         activeTask: 'iSmartOffice Web Local Dev Setup — Auth0, CORS Proxy',
-        direction: 'down'
+        direction: 'down',
+        state: 'desk',
+        actionTimer: 600,
+        waypoints: [],
+        isWalking: false,
+        walkSpeed: 1.6,
+        thought: { text: '', timer: 0, maxTimer: 220, opacity: 0 }
       },
       'yudi': {
         key: 'yudi',
@@ -246,6 +316,8 @@ class Office2DScene {
         role: 'Tester & Designer Support',
         x: 365,
         y: 380,
+        homeX: 365,
+        homeY: 380,
         deskX: 335,
         deskY: 402,
         deskW: 68,
@@ -256,7 +328,13 @@ class Office2DScene {
         pants: '#1c1917',
         status: 'done',
         activeTask: 'QA Verification & TestFlight Checks Completed',
-        direction: 'down'
+        direction: 'down',
+        state: 'desk',
+        actionTimer: 820,
+        waypoints: [],
+        isWalking: false,
+        walkSpeed: 1.6,
+        thought: { text: '', timer: 0, maxTimer: 220, opacity: 0 }
       },
       'ary': {
         key: 'ary',
@@ -264,6 +342,8 @@ class Office2DScene {
         role: 'Marketing & Outreach Lead',
         x: 640,
         y: 380,
+        homeX: 640,
+        homeY: 380,
         deskX: 600,
         deskY: 402,
         deskW: 80,
@@ -274,7 +354,13 @@ class Office2DScene {
         pants: '#1e1b4b',
         status: 'working',
         activeTask: 'Executive Meeting Coordination: Carlos Zoom Session',
-        direction: 'down'
+        direction: 'down',
+        state: 'desk',
+        actionTimer: 480,
+        waypoints: [],
+        isWalking: false,
+        walkSpeed: 1.6,
+        thought: { text: '', timer: 0, maxTimer: 220, opacity: 0 }
       },
       'fikri': {
         key: 'fikri',
@@ -282,6 +368,8 @@ class Office2DScene {
         role: 'Mobile Dev & Coordinator',
         x: 910,
         y: 380,
+        homeX: 910,
+        homeY: 380,
         deskX: 875,
         deskY: 402,
         deskW: 75,
@@ -292,7 +380,13 @@ class Office2DScene {
         pants: '#172554',
         status: 'working',
         activeTask: 'Investigasi & Mitigasi Printing Annie',
-        direction: 'down'
+        direction: 'down',
+        state: 'desk',
+        actionTimer: 640,
+        waypoints: [],
+        isWalking: false,
+        walkSpeed: 1.6,
+        thought: { text: '', timer: 0, maxTimer: 220, opacity: 0 }
       },
       'kaboudan': {
         key: 'kaboudan',
@@ -300,6 +394,8 @@ class Office2DScene {
         role: 'Clinical AI Advisor',
         x: 1110,
         y: 380,
+        homeX: 1110,
+        homeY: 380,
         deskX: 1075,
         deskY: 402,
         deskW: 75,
@@ -310,16 +406,47 @@ class Office2DScene {
         pants: '#0f172a',
         status: 'idle',
         activeTask: 'Orthodontic Cephalometric Verification',
-        direction: 'down'
+        direction: 'down',
+        state: 'desk',
+        actionTimer: 900,
+        waypoints: [],
+        isWalking: false,
+        walkSpeed: 1.6,
+        thought: { text: '', timer: 0, maxTimer: 220, opacity: 0 }
       }
     };
 
-    // Oyen the Orange Cat
+    // Designated Break Room Activity Spots
+    this.breakSpots = {
+      lounge: [
+        { x: 105, y: 645, room: 'lounge', label: 'relaxing on sofa' },
+        { x: 155, y: 645, room: 'lounge', label: 'reading on sofa' },
+        { x: 245, y: 645, room: 'lounge', label: 'chilling on beanbag' },
+        { x: 310, y: 655, room: 'lounge', label: 'relaxing in lounge' },
+        { x: 180, y: 595, room: 'lounge', label: 'at espresso bar' }
+      ],
+      cafeteria: [
+        { x: 535, y: 630, room: 'cafeteria', label: 'lunch at Table 1' },
+        { x: 585, y: 630, room: 'cafeteria', label: 'coffee at Table 1' },
+        { x: 725, y: 630, room: 'cafeteria', label: 'lunch at Table 2' },
+        { x: 775, y: 630, room: 'cafeteria', label: 'snack at Table 2' },
+        { x: 650, y: 585, room: 'cafeteria', label: 'grabbing buffet food' }
+      ],
+      prayer: [
+        { x: 986, y: 615, room: 'prayer', label: 'solat on prayer mat' },
+        { x: 1041, y: 615, room: 'prayer', label: 'praying in musholla' },
+        { x: 1096, y: 615, room: 'prayer', label: 'solat on prayer mat' },
+        { x: 1041, y: 680, room: 'prayer', label: 'peaceful reflection' },
+        { x: 1096, y: 680, room: 'prayer', label: 'dhikr & prayer' }
+      ]
+    };
+
+    // Oyen the Orange Cat (Roams inside Coffee Lounge)
     this.cat = {
-      x: 540,
-      y: 680,
-      targetX: 540,
-      targetY: 680,
+      x: 220,
+      y: 670,
+      targetX: 220,
+      targetY: 670,
       dir: 1,
       isWalking: false,
       purrTimer: 0
@@ -632,10 +759,13 @@ class Office2DScene {
     }
     this.nearbyPerson = closestPerson;
 
-    // Oyen Cat AI roaming in lounge
-    if (this.tick % 240 === 0 && Math.random() < 0.6) {
-      this.cat.targetX = 260 + Math.random() * 700;
-      this.cat.targetY = 620 + Math.random() * 100;
+    // Personnel Behavioral State Machine & Animations
+    this.updatePersonnelAI();
+
+    // Oyen Cat AI roaming in Coffee Lounge
+    if (this.tick % 240 === 0 && Math.random() < 0.65) {
+      this.cat.targetX = 80 + Math.random() * 260; // lounge boundaries
+      this.cat.targetY = 600 + Math.random() * 110;
       this.cat.dir = this.cat.targetX > this.cat.x ? 1 : -1;
       this.cat.isWalking = true;
     }
@@ -651,6 +781,284 @@ class Office2DScene {
       }
     }
     if (this.cat.purrTimer > 0) this.cat.purrTimer--;
+  }
+
+  // ─────────────────────────────────────────────────────────────
+  // Dynamic Personnel AI & Thought Bubble Simulation
+  // ─────────────────────────────────────────────────────────────
+  generatePathToBreak(p, targetSpot) {
+    const waypoints = [];
+    const fromX = p.x;
+    const fromY = p.y;
+    const toX = targetSpot.x;
+    const toY = targetSpot.y;
+
+    if (p.homeY < 250) {
+      // Row 1 (y: 130) -> Upper Corridor (y: 255) -> Lower Corridor (y: 525) -> Room
+      waypoints.push({ x: fromX, y: fromY + 45 });
+      waypoints.push({ x: fromX, y: 255 });
+      const aisleX = (toX < 440) ? 220 : ((toX > 880) ? 1050 : 640);
+      waypoints.push({ x: aisleX, y: 255 });
+      waypoints.push({ x: aisleX, y: 525 });
+      waypoints.push({ x: toX, y: 525 });
+      waypoints.push({ x: toX, y: toY });
+    } else {
+      // Row 2 (y: 380) -> Lower Corridor (y: 525) -> Room
+      waypoints.push({ x: fromX, y: fromY + 40 });
+      waypoints.push({ x: fromX, y: 525 });
+      waypoints.push({ x: toX, y: 525 });
+      waypoints.push({ x: toX, y: toY });
+    }
+    return waypoints;
+  }
+
+  generatePathToDesk(p) {
+    const waypoints = [];
+    const fromX = p.x;
+    const fromY = p.y;
+    const toX = p.homeX;
+    const toY = p.homeY;
+
+    // Exit room to Lower Corridor (y: 525)
+    waypoints.push({ x: fromX, y: 525 });
+
+    if (toY < 250) {
+      // Returning to Row 1
+      const aisleX = (fromX < 440) ? 220 : ((fromX > 880) ? 1050 : 640);
+      waypoints.push({ x: aisleX, y: 525 });
+      waypoints.push({ x: aisleX, y: 255 });
+      waypoints.push({ x: toX, y: 255 });
+      waypoints.push({ x: toX, y: toY + 45 });
+      waypoints.push({ x: toX, y: toY });
+    } else {
+      // Returning to Row 2
+      waypoints.push({ x: toX, y: 525 });
+      waypoints.push({ x: toX, y: toY + 40 });
+      waypoints.push({ x: toX, y: toY });
+    }
+    return waypoints;
+  }
+
+  getPersonaThought(p) {
+    if (p.state === 'cafeteria') {
+      const cafThoughts = [
+        "☕ Fresh dark roast coffee hits just right!",
+        "🥪 Delicious sandwich from the pantry buffet!",
+        "🥗 Healthy lunch break before afternoon review.",
+        "🧃 Fresh juice & good chat with team members.",
+        "🍎 Grabbing a crisp apple from the pantry."
+      ];
+      return cafThoughts[Math.floor(Math.random() * cafThoughts.length)];
+    }
+    if (p.state === 'prayer') {
+      const prayerThoughts = [
+        "🤲 Waktunya solat & bersyukur sejenak.",
+        "🕊️ Peaceful prayer break in the musholla.",
+        "✨ Tenang dan khusyuk di musholla...",
+        "🤲 Semoga sprint & deployment minggu ini berkah.",
+        "🌿 Calming spiritual reflection."
+      ];
+      return prayerThoughts[Math.floor(Math.random() * prayerThoughts.length)];
+    }
+    if (p.state === 'lounge') {
+      const loungeThoughts = [
+        "🐱 Oyen is so fluffy today! Purrr...",
+        "🛋️ Chilling on the beanbag to clear my head.",
+        "💡 Just got a fresh architectural insight!",
+        "🌿 Patio breeze is very relaxing.",
+        "☕ Sipping double espresso in the garden lounge."
+      ];
+      return loungeThoughts[Math.floor(Math.random() * loungeThoughts.length)];
+    }
+
+    // At desk: thinking about active task
+    const customThoughts = {
+      'aryo': [
+        "⚡ Bolt Engine: fine-tuning queue guards...",
+        "💭 Annie burst print bottleneck is almost resolved!",
+        "🏗️ Designing resilient multi-region failover",
+        "🚀 Keeping system latency under 45ms"
+      ],
+      'ringo': [
+        "🛠️ Upgrading node 4 of 8 Azure Burst Print VMs",
+        "🐳 Docker cluster health check: all 13 agents green",
+        "📊 Monitoring CPU throttle on annieds-api-001",
+        "🔒 Hardening SSH keys and backup automation"
+      ],
+      'acid': [
+        "📱 Checking iSmartOffice mobile backlog #14 & #16",
+        "🚀 Reviewing patient appointment scheduling UX",
+        "🔍 Testing offline sync for provider clinic app",
+        "✨ Mobile UI feels snappy and responsive now"
+      ],
+      'rangga': [
+        "💻 Setting up Auth0 CORS proxy headers...",
+        "🎯 Clinical Finding UI component looking sharp!",
+        "🛠️ Resolving web local dev token refresh loop",
+        "📐 Verifying teeth charting grid alignment"
+      ],
+      'yudi': [
+        "✅ TestFlight build verification passed 100%!",
+        "🔍 Testing edge case: negative timepoint input",
+        "🎨 Fine-tuning button states & hover transitions",
+        "📋 QA regression checklist completed for today"
+      ],
+      'ary': [
+        "🌐 Coordinating Carlos executive Zoom sync session",
+        "📈 Global clinic outreach response rate up 22%",
+        "🤝 Finalizing OrthoFX partnership notes",
+        "📧 Sending weekly strategic briefs to stakeholders"
+      ],
+      'fikri': [
+        "🤖 Investigating Annie image classification pipeline",
+        "🔬 Dataset on Bioprogressive: 1600 cases validated",
+        "📊 Matching cephalometric landmarks with Dr. Kaboudan",
+        "⚡ Speeding up YOLO inference time by 18%"
+      ],
+      'kusnoto': [
+        "📋 UIC Orthodontics roadmap alignment looks solid",
+        "🎓 Academic clinical validation standards on track",
+        "💡 Integrating ADA billing codes with AI findings",
+        "🌟 High-standard clinical excellence for 2026"
+      ],
+      'flavio': [
+        "💰 Stripe automated salary & payout pipeline verified",
+        "📊 Reviewing LatAm expansion financial model",
+        "🧾 Reconciling monthly cloud infrastructure costs",
+        "📈 Financial health & budget allocation: strong"
+      ],
+      'kaboudan': [
+        "🧠 Cephalometric landmark precision at 98.7%",
+        "🔬 Reviewing clinical edge cases in AI diagnostics",
+        "📐 Analyzing craniomaxillofacial angle metrics",
+        "✨ Clinical diagnostic model verification completed"
+      ]
+    };
+
+    const list = customThoughts[p.key];
+    if (list && list.length > 0) {
+      return list[Math.floor(Math.random() * list.length)];
+    }
+    if (p.activeTask) {
+      return `💭 ${p.activeTask.slice(0, 36)}...`;
+    }
+    return "⚡ Focused on core sprint deliverables";
+  }
+
+  updatePersonnelAI() {
+    const people = Object.values(this.personnel);
+
+    // 1. Update thought bubble timers & animations
+    people.forEach(p => {
+      if (p.thought && p.thought.timer > 0) {
+        p.thought.timer--;
+        if (p.thought.timer > p.thought.maxTimer - 20) {
+          p.thought.opacity = (p.thought.maxTimer - p.thought.timer) / 20;
+        } else if (p.thought.timer < 20) {
+          p.thought.opacity = p.thought.timer / 20;
+        } else {
+          p.thought.opacity = 1;
+        }
+      }
+
+      // If walking along waypoints
+      if (p.isWalking && p.waypoints && p.waypoints.length > 0) {
+        const next = p.waypoints[0];
+        const dx = next.x - p.x;
+        const dy = next.y - p.y;
+        const dist = Math.hypot(dx, dy);
+
+        if (dist > p.walkSpeed) {
+          p.x += (dx / dist) * p.walkSpeed;
+          p.y += (dy / dist) * p.walkSpeed;
+          p.direction = Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'right' : 'left') : (dy > 0 ? 'down' : 'up');
+        } else {
+          p.x = next.x;
+          p.y = next.y;
+          p.waypoints.shift();
+
+          if (p.waypoints.length === 0) {
+            // Reached destination!
+            p.isWalking = false;
+            p.state = p.targetState;
+
+            if (p.state === 'desk') {
+              p.direction = 'down';
+              p.actionTimer = Math.floor(Math.random() * 800) + 500;
+              if (Math.random() < 0.75) {
+                p.thought = {
+                  text: this.getPersonaThought(p),
+                  timer: 200,
+                  maxTimer: 200,
+                  opacity: 0
+                };
+              }
+            } else {
+              // Arrived at break room
+              if (p.state === 'prayer') p.direction = 'up';
+              else if (p.state === 'cafeteria') p.direction = (p.y > 630 ? 'up' : 'down');
+              else p.direction = 'down';
+
+              p.actionTimer = Math.floor(Math.random() * 500) + 400;
+              if (Math.random() < 0.85) {
+                p.thought = {
+                  text: this.getPersonaThought(p),
+                  timer: 220,
+                  maxTimer: 220,
+                  opacity: 0
+                };
+              }
+            }
+          }
+        }
+      } else {
+        // Idle at desk or at break spot
+        if (p.actionTimer > 0) {
+          p.actionTimer--;
+        } else {
+          if (p.state === 'desk') {
+            const onBreak = people.filter(m => m.state !== 'desk' || m.isWalking).length;
+            if (onBreak < 3) {
+              const rand = Math.random();
+              let roomType = 'cafeteria';
+              if (rand < 0.35) roomType = 'lounge';
+              else if (rand < 0.60) roomType = 'prayer';
+
+              const spots = this.breakSpots[roomType];
+              const spot = spots[Math.floor(Math.random() * spots.length)];
+
+              p.waypoints = this.generatePathToBreak(p, spot);
+              p.targetState = roomType;
+              p.isWalking = true;
+            } else {
+              p.actionTimer = 220;
+            }
+          } else {
+            // Returning to desk
+            p.waypoints = this.generatePathToDesk(p);
+            p.targetState = 'desk';
+            p.isWalking = true;
+          }
+        }
+      }
+    });
+
+    // 2. Periodic random thought bubble trigger (every ~140 ticks = ~2.3 seconds)
+    if (this.tick % 140 === 0) {
+      const activeThoughts = people.filter(p => p.thought && p.thought.timer > 0).length;
+      if (activeThoughts < 2 && Math.random() < 0.7) {
+        const availablePeople = people.filter(p => !p.thought || p.thought.timer === 0);
+        if (availablePeople.length > 0) {
+          const lucky = availablePeople[Math.floor(Math.random() * availablePeople.length)];
+          lucky.thought = {
+            text: this.getPersonaThought(lucky),
+            timer: 210,
+            maxTimer: 210,
+            opacity: 0
+          };
+        }
+      }
+    }
   }
 
   // ─────────────────────────────────────────────────────────────
@@ -680,30 +1088,35 @@ class Office2DScene {
     // 4. Background Furniture (Chairs, Projector Screen, Server Racks, Plants)
     this.renderWallFurniture(ctx);
 
-    // 5. Personnel Characters (Sitting in their chairs)
+    // 5. Personnel Characters
     this.renderPersonnel(ctx);
 
-    // 6. Foreground Desks, Monitors, and Keyboards (Naturally in front of characters)
+    // 6. Foreground Desks, Monitors, and Keyboards
     this.renderDesksAndTech(ctx);
 
-    // 7. Cat & Coffee Lounge Props
+    // 7. Coffee Lounge, Cafeteria, & Prayer Room Props
     this.renderLoungeProps(ctx);
+    this.renderCafeteriaProps(ctx);
+    this.renderPrayerRoomProps(ctx);
     this.renderCat(ctx);
 
     // 8. Visitor Avatar (You)
     this.renderPlayer(ctx);
 
-    // 9. Overhead Nameplates, Live Status Badges & Speech Bubbles
+    // 9. Overhead Nameplates & Live Status Badges
     this.renderOverheadLabels(ctx);
 
-    // 10. Night Mode Ambient Darkness
+    // 10. Dynamic Thought Bubbles (Tasks, Coffee, Solat & Ideas)
+    this.renderThoughtBubbles(ctx);
+
+    // 11. Night Mode Ambient Darkness
     if (this.isNight) {
       this.renderNightOverlay(ctx);
     }
 
     ctx.restore();
 
-    // 11. Screen-Space HUD Controls & Instructions
+    // 12. Screen-Space HUD Controls & Instructions
     this.renderHUD(ctx);
   }
 
@@ -759,6 +1172,37 @@ class Office2DScene {
           ctx.lineTo(x, r.y + r.h);
           ctx.stroke();
         }
+      } else if (r.floorType === 'checkered_tile') {
+        // Cafeteria clean modern ceramic checkered tiles
+        const tileSize = 24;
+        for (let x = r.x; x < r.x + r.w; x += tileSize) {
+          for (let y = r.y; y < r.y + r.h; y += tileSize) {
+            const isLight = ((Math.floor((x - r.x) / tileSize) + Math.floor((y - r.y) / tileSize)) % 2 === 0);
+            ctx.fillStyle = isLight ? '#1a2738' : '#111b27';
+            ctx.fillRect(x, y, Math.min(tileSize, r.x + r.w - x), Math.min(tileSize, r.y + r.h - y));
+            ctx.strokeStyle = '#223447';
+            ctx.lineWidth = 0.5;
+            ctx.strokeRect(x, y, Math.min(tileSize, r.x + r.w - x), Math.min(tileSize, r.y + r.h - y));
+          }
+        }
+      } else if (r.floorType === 'carpet_emerald') {
+        // Musholla / Prayer room serene green carpet with prayer lines
+        ctx.fillStyle = '#043b2c';
+        ctx.fillRect(r.x, r.y, r.w, r.h);
+        ctx.strokeStyle = '#065f46';
+        ctx.lineWidth = 1;
+        for (let y = r.y + 20; y < r.y + r.h; y += 32) {
+          ctx.beginPath();
+          ctx.moveTo(r.x, y);
+          ctx.lineTo(r.x + r.w, y);
+          ctx.stroke();
+        }
+        ctx.strokeStyle = 'rgba(234, 179, 8, 0.25)';
+        ctx.lineWidth = 1.5;
+        ctx.beginPath();
+        ctx.moveTo(r.x, r.y + 40);
+        ctx.lineTo(r.x + r.w, r.y + 40);
+        ctx.stroke();
       } else {
         ctx.fillStyle = '#0f172a';
         ctx.fillRect(r.x, r.y, r.w, r.h);
@@ -879,11 +1323,11 @@ class Office2DScene {
       }
     }
 
-    // 4. Executive & Desk Chairs (drawn behind characters)
+    // 4. Executive & Desk Chairs (drawn behind characters, staying at desk)
     Object.values(this.personnel).forEach(p => {
       ctx.fillStyle = '#1e293b';
       ctx.beginPath();
-      ctx.ellipse(p.x, p.y + 4, 14, 10, 0, 0, Math.PI * 2);
+      ctx.ellipse(p.homeX || p.x, (p.homeY || p.y) + 4, 14, 10, 0, 0, Math.PI * 2);
       ctx.fill();
       ctx.strokeStyle = '#334155';
       ctx.lineWidth = 1;
@@ -975,44 +1419,307 @@ class Office2DScene {
   }
 
   renderLoungeProps(ctx) {
-    // 1. Long Coffee Counter
+    // 1. Espresso Bar Counter
     ctx.fillStyle = '#3e1a06';
-    ctx.fillRect(200, 580, 240, 44);
+    ctx.fillRect(50, 575, 140, 36);
     ctx.strokeStyle = '#78350f';
     ctx.lineWidth = 1.5;
-    ctx.strokeRect(200, 580, 240, 44);
+    ctx.strokeRect(50, 575, 140, 36);
+
+    // Espresso machine
+    ctx.fillStyle = '#475569';
+    ctx.fillRect(60, 564, 34, 16);
+    ctx.fillStyle = '#ef4444';
+    ctx.fillRect(64, 569, 5, 5); // red switch
+
+    // Steam
+    const steamY = (this.tick % 36) * 0.35;
+    ctx.fillStyle = 'rgba(255, 255, 255, ' + (0.4 - steamY / 20) + ')';
+    ctx.beginPath();
+    ctx.arc(77, 558 - steamY, 2.5 + steamY * 0.15, 0, Math.PI * 2);
+    ctx.fill();
 
     // Coffee cups on bar
     ctx.fillStyle = '#f8fafc';
-    ctx.fillRect(220, 592, 11, 13);
-    ctx.fillRect(245, 592, 11, 13);
-    ctx.fillRect(270, 592, 11, 13);
+    ctx.fillRect(105, 582, 9, 12);
+    ctx.fillRect(122, 582, 9, 12);
+    ctx.fillRect(139, 582, 9, 12);
 
     // Water Dispenser
     ctx.fillStyle = '#94a3b8';
-    ctx.fillRect(470, 578, 28, 48);
+    ctx.fillRect(205, 572, 22, 40);
     ctx.fillStyle = '#38bdf8';
     ctx.beginPath();
-    ctx.arc(484, 588, 10, 0, Math.PI * 2);
+    ctx.arc(216, 580, 8, 0, Math.PI * 2);
     ctx.fill();
 
-    // 2. Beanbag Chairs & Sofa Lounge (Right side)
+    // 2. Cozy L-Sofa
+    const sofaX = 65;
+    const sofaY = 640;
+    ctx.fillStyle = '#1e293b';
+    ctx.fillRect(sofaX, sofaY, 130, 44);
+    ctx.strokeStyle = '#334155';
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(sofaX, sofaY, 130, 44);
+    // Cushions
+    ctx.fillStyle = '#334155';
+    ctx.fillRect(sofaX + 6, sofaY + 6, 36, 32);
+    ctx.fillRect(sofaX + 46, sofaY + 6, 36, 32);
+    ctx.fillRect(sofaX + 86, sofaY + 6, 36, 32);
+
+    // Coffee Table in front of sofa
+    ctx.fillStyle = '#292524';
+    ctx.fillRect(sofaX + 20, sofaY + 54, 80, 22);
+    ctx.strokeStyle = '#44403c';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(sofaX + 20, sofaY + 54, 80, 22);
+    // Tablet/magazine on table
+    ctx.fillStyle = '#38bdf8';
+    ctx.fillRect(sofaX + 48, sofaY + 59, 18, 12);
+
+    // 3. Beanbag Chairs
     ctx.fillStyle = '#ec4899';
     ctx.beginPath();
-    ctx.ellipse(820, 620, 26, 18, 0, 0, Math.PI * 2);
+    ctx.ellipse(245, 645, 24, 18, 0, 0, Math.PI * 2);
     ctx.fill();
 
     ctx.fillStyle = '#8b5cf6';
     ctx.beginPath();
-    ctx.ellipse(890, 630, 28, 20, 0, 0, Math.PI * 2);
+    ctx.ellipse(310, 655, 26, 20, 0, 0, Math.PI * 2);
     ctx.fill();
 
-    ctx.fillStyle = '#06b6d4';
+    // 4. Oyen's Cat Bed & Food Bowl
+    const catBedX = 345;
+    const catBedY = 705;
+    ctx.fillStyle = '#ea580c';
     ctx.beginPath();
-    ctx.ellipse(960, 620, 26, 18, 0, 0, Math.PI * 2);
+    ctx.ellipse(catBedX, catBedY, 20, 14, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#fdba74';
+    ctx.beginPath();
+    ctx.ellipse(catBedX, catBedY, 14, 9, 0, 0, Math.PI * 2);
+    ctx.fill();
+    // Bowl
+    ctx.fillStyle = '#64748b';
+    ctx.beginPath();
+    ctx.ellipse(catBedX - 25, catBedY + 4, 7, 4, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#f97316';
+    ctx.fillRect(catBedX - 27, catBedY + 2, 4, 3);
+  }
+
+  renderCafeteriaProps(ctx) {
+    // 1. Food Buffet & Pantry Island Counter
+    ctx.fillStyle = '#1e293b';
+    ctx.fillRect(470, 568, 400, 26);
+    ctx.strokeStyle = '#334155';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(470, 568, 400, 26);
+
+    // Buffet warming trays (chafing dishes)
+    for (let i = 0; i < 3; i++) {
+      const tx = 485 + i * 55;
+      ctx.fillStyle = '#64748b';
+      ctx.fillRect(tx, 572, 38, 18);
+      ctx.fillStyle = '#cbd5e1';
+      ctx.fillRect(tx + 4, 574, 30, 4);
+    }
+
+    // Fruit bowl
+    ctx.fillStyle = '#78350f';
+    ctx.beginPath();
+    ctx.ellipse(680, 581, 14, 8, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#ef4444'; // apple
+    ctx.beginPath();
+    ctx.arc(676, 578, 4, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = '#f59e0b'; // orange
+    ctx.beginPath();
+    ctx.arc(684, 578, 4, 0, Math.PI * 2);
     ctx.fill();
 
-    // 3. Potted Plants
+    // Drink Dispensers (Juice & Iced Tea)
+    ctx.fillStyle = '#38bdf8';
+    ctx.fillRect(725, 564, 18, 28);
+    ctx.fillStyle = '#f59e0b'; // orange juice
+    ctx.fillRect(727, 569, 14, 18);
+
+    ctx.fillStyle = '#78350f'; // iced tea
+    ctx.fillRect(755, 564, 18, 28);
+    ctx.fillStyle = '#b45309';
+    ctx.fillRect(757, 569, 14, 18);
+
+    // Microwave & coffee pot
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(795, 566, 26, 22);
+    ctx.fillStyle = '#38bdf8';
+    ctx.fillRect(798, 570, 14, 14);
+
+    // 2. Dining Table 1 (seats 4)
+    const dt1X = 515;
+    const dt1Y = 635;
+    const dtW = 100;
+    const dtH = 42;
+    // Chairs
+    ctx.fillStyle = '#1e293b';
+    ctx.fillRect(dt1X + 15, dt1Y - 12, 20, 10);
+    ctx.fillRect(dt1X + 65, dt1Y - 12, 20, 10);
+    ctx.fillRect(dt1X + 15, dt1Y + dtH + 2, 20, 10);
+    ctx.fillRect(dt1X + 65, dt1Y + dtH + 2, 20, 10);
+    // Tabletop
+    ctx.fillStyle = '#292524';
+    ctx.fillRect(dt1X, dt1Y, dtW, dtH);
+    ctx.strokeStyle = '#44403c';
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(dt1X, dt1Y, dtW, dtH);
+    // Plates & cups
+    ctx.fillStyle = '#f8fafc';
+    ctx.beginPath();
+    ctx.arc(dt1X + 25, dt1Y + 14, 6, 0, Math.PI * 2);
+    ctx.arc(dt1X + 75, dt1Y + 14, 6, 0, Math.PI * 2);
+    ctx.arc(dt1X + 25, dt1Y + 28, 6, 0, Math.PI * 2);
+    ctx.arc(dt1X + 75, dt1Y + 28, 6, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 3. Dining Table 2 (seats 4)
+    const dt2X = 705;
+    const dt2Y = 635;
+    // Chairs
+    ctx.fillStyle = '#1e293b';
+    ctx.fillRect(dt2X + 15, dt2Y - 12, 20, 10);
+    ctx.fillRect(dt2X + 65, dt2Y - 12, 20, 10);
+    ctx.fillRect(dt2X + 15, dt2Y + dtH + 2, 20, 10);
+    ctx.fillRect(dt2X + 65, dt2Y + dtH + 2, 20, 10);
+    // Tabletop
+    ctx.fillStyle = '#292524';
+    ctx.fillRect(dt2X, dt2Y, dtW, dtH);
+    ctx.strokeStyle = '#44403c';
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(dt2X, dt2Y, dtW, dtH);
+    // Plates & cups
+    ctx.fillStyle = '#f8fafc';
+    ctx.beginPath();
+    ctx.arc(dt2X + 25, dt2Y + 14, 6, 0, Math.PI * 2);
+    ctx.arc(dt2X + 75, dt2Y + 14, 6, 0, Math.PI * 2);
+    ctx.arc(dt2X + 25, dt2Y + 28, 6, 0, Math.PI * 2);
+    ctx.arc(dt2X + 75, dt2Y + 28, 6, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Wall Chalkboard Menu
+    ctx.fillStyle = '#0f172a';
+    ctx.fillRect(570, 544, 180, 18);
+    ctx.strokeStyle = '#78350f';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(570, 544, 180, 18);
+    ctx.font = '8px system-ui';
+    ctx.fillStyle = '#4ade80';
+    ctx.textAlign = 'center';
+    ctx.fillText('🥗 HCDS PANTRY • Fresh Coffee & Lunch', 660, 556);
+  }
+
+  renderPrayerRoomProps(ctx) {
+    // 1. Mihrab / Qibla Wall Arch (North Wall)
+    const mihrabX = 1060;
+    const mihrabY = 542;
+    ctx.fillStyle = '#064e3b';
+    ctx.fillRect(mihrabX, mihrabY, 60, 20);
+    ctx.strokeStyle = '#fbbf24';
+    ctx.lineWidth = 1.5;
+    ctx.strokeRect(mihrabX, mihrabY, 60, 20);
+
+    // Arched dome header inside mihrab
+    ctx.fillStyle = '#047857';
+    ctx.beginPath();
+    ctx.arc(mihrabX + 30, mihrabY + 18, 18, Math.PI, 0);
+    ctx.fill();
+    ctx.strokeStyle = '#facc15';
+    ctx.stroke();
+
+    // Qibla label & arrow
+    ctx.font = 'bold 7.5px system-ui';
+    ctx.fillStyle = '#fde047';
+    ctx.textAlign = 'center';
+    ctx.fillText('◀ QIBLA', mihrabX + 30, mihrabY + 12);
+
+    // 2. Ornate Sajadah (Prayer Mats in 2 rows)
+    const matW = 32;
+    const matH = 44;
+    const colXs = [970, 1025, 1080, 1135];
+    const rowYs = [600, 665];
+
+    rowYs.forEach(my => {
+      colXs.forEach(mx => {
+        // Sajadah base
+        ctx.fillStyle = '#065f46';
+        ctx.fillRect(mx, my, matW, matH);
+        ctx.strokeStyle = '#d97706';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(mx, my, matW, matH);
+
+        // Arch contour
+        ctx.strokeStyle = '#fbbf24';
+        ctx.lineWidth = 0.8;
+        ctx.beginPath();
+        ctx.arc(mx + (matW / 2), my + 14, 10, Math.PI, 0);
+        ctx.stroke();
+
+        // Fringe tassels
+        ctx.fillStyle = '#fef08a';
+        for (let f = 0; f < matW; f += 4) {
+          ctx.fillRect(mx + f, my + matH, 2, 2.5);
+        }
+      });
+    });
+
+    // 3. Holy Book / Quran Rehal Stand
+    const rehalX = 1205;
+    const rehalY = 575;
+    ctx.fillStyle = '#78350f';
+    ctx.fillRect(rehalX, rehalY, 26, 26);
+    ctx.strokeStyle = '#a16207';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(rehalX, rehalY, 26, 26);
+    // Open book on rehal
+    ctx.fillStyle = '#fef3c7';
+    ctx.fillRect(rehalX + 4, rehalY + 5, 8, 14);
+    ctx.fillRect(rehalX + 14, rehalY + 5, 8, 14);
+    ctx.fillStyle = '#166534';
+    ctx.fillRect(rehalX + 2, rehalY + 5, 2, 14);
+    ctx.fillRect(rehalX + 22, rehalY + 5, 2, 14);
+
+    // 4. Wooden Shoe Rack at entrance
+    const shoeRackX = 945;
+    const shoeRackY = 715;
+    ctx.fillStyle = '#3e1a06';
+    ctx.fillRect(shoeRackX, shoeRackY, 36, 22);
+    ctx.strokeStyle = '#572507';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(shoeRackX, shoeRackY, 36, 22);
+    // Shoes
+    ctx.fillStyle = '#1e293b';
+    ctx.fillRect(shoeRackX + 4, shoeRackY + 4, 12, 6);
+    ctx.fillStyle = '#475569';
+    ctx.fillRect(shoeRackX + 20, shoeRackY + 4, 12, 6);
+    ctx.fillStyle = '#334155';
+    ctx.fillRect(shoeRackX + 4, shoeRackY + 12, 12, 6);
+    ctx.fillStyle = '#1e293b';
+    ctx.fillRect(shoeRackX + 20, shoeRackY + 12, 12, 6);
+
+    // 5. Serene Lantern Ambient Halo
+    const lanternX = 1190;
+    const lanternY = 690;
+    ctx.fillStyle = '#fbbf24';
+    ctx.beginPath();
+    ctx.arc(lanternX, lanternY, 4, 0, Math.PI * 2);
+    ctx.fill();
+    const glow = (Math.sin(this.tick * 0.08) * 0.15) + 0.35;
+    ctx.fillStyle = `rgba(251, 191, 36, ${glow})`;
+    ctx.beginPath();
+    ctx.arc(lanternX, lanternY, 14, 0, Math.PI * 2);
+    ctx.fill();
+
+    // 6. Corner Indoor Plants
     const plantLocations = [
       { x: 45, y: 45 },
       { x: 390, y: 45 },
@@ -1020,8 +1727,12 @@ class Office2DScene {
       { x: 825, y: 45 },
       { x: 45, y: 295 },
       { x: 1235, y: 295 },
-      { x: 160, y: 560 },
-      { x: 1110, y: 560 }
+      { x: 45, y: 555 },
+      { x: 390, y: 555 },
+      { x: 455, y: 555 },
+      { x: 885, y: 555 },
+      { x: 945, y: 555 },
+      { x: 1235, y: 555 }
     ];
     plantLocations.forEach(pl => {
       ctx.fillStyle = '#92400e';
@@ -1107,9 +1818,15 @@ class Office2DScene {
 
     let bobY = 0;
     let legOffset = 0;
-    if (isPlayer && this.player.isMoving) {
+    const isWalking = (isPlayer && this.player.isMoving) || (!isPlayer && char.isWalking);
+    const isPraying = (!isPlayer && char.state === 'prayer');
+
+    if (isWalking) {
       bobY = Math.sin(this.tick * 0.45) * 2;
-      legOffset = Math.sin(this.tick * 0.45) * 3;
+      legOffset = Math.sin(this.tick * 0.45) * 3.5;
+    } else if (isPraying) {
+      // Gentle meditative prayer bowing
+      bobY = Math.sin(this.tick * 0.06) * 1.5 + 2;
     } else {
       bobY = Math.sin((this.tick + (x * 7)) * 0.08) * 0.8;
     }
@@ -1118,8 +1835,13 @@ class Office2DScene {
 
     // Legs
     ctx.fillStyle = char.pants || '#1e293b';
-    ctx.fillRect(x - 5, drawY + 6, 4, 7 + legOffset * 0.5);
-    ctx.fillRect(x + 1, drawY + 6, 4, 7 - legOffset * 0.5);
+    if (isPraying) {
+      // Folded kneeling posture
+      ctx.fillRect(x - 6, drawY + 8, 12, 5);
+    } else {
+      ctx.fillRect(x - 5, drawY + 6, 4, 7 + legOffset * 0.5);
+      ctx.fillRect(x + 1, drawY + 6, 4, 7 - legOffset * 0.5);
+    }
 
     // Torso / Shirt
     ctx.fillStyle = char.shirt || char.color;
@@ -1137,8 +1859,8 @@ class Office2DScene {
 
     // Eyes
     ctx.fillStyle = '#0f172a';
-    if (char.direction === 'up') {
-      // Facing away
+    if (char.direction === 'up' || isPraying) {
+      // Facing away or closed in prayer
     } else if (char.direction === 'left') {
       ctx.fillRect(x - 4, drawY - 11, 2, 2.5);
     } else if (char.direction === 'right') {
@@ -1157,6 +1879,108 @@ class Office2DScene {
     }
 
     ctx.restore();
+  }
+
+  renderThoughtBubbles(ctx) {
+    Object.values(this.personnel).forEach(p => {
+      if (!p.thought || p.thought.timer <= 0 || p.thought.opacity <= 0) return;
+
+      const op = Math.min(1, Math.max(0, p.thought.opacity));
+      const x = p.x;
+      const floatY = Math.sin((this.tick + (p.x * 4)) * 0.08) * 2;
+      const headY = p.y - 18;
+
+      ctx.save();
+      ctx.globalAlpha = op;
+
+      // 1. Three rising thought bubbles
+      const bubbleColor = 'rgba(15, 23, 42, 0.95)';
+      const accentColor = p.color || '#38bdf8';
+
+      // Circle 1 (closest to head)
+      ctx.fillStyle = bubbleColor;
+      ctx.strokeStyle = accentColor;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.arc(x + 8, headY - 10 + floatY * 0.25, 3.5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      // Circle 2
+      ctx.beginPath();
+      ctx.arc(x + 14, headY - 20 + floatY * 0.5, 5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      // Circle 3
+      ctx.beginPath();
+      ctx.arc(x + 20, headY - 32 + floatY * 0.75, 6.5, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+
+      // 2. Main Thought Bubble Container
+      ctx.font = '600 10px system-ui, -apple-system, BlinkMacSystemFont, sans-serif';
+      const text = p.thought.text || '';
+      const textMetrics = ctx.measureText(text);
+      const bubbleW = Math.max(textMetrics.width + 24, 120);
+      const bubbleH = 26;
+
+      let bubbleCenterX = x + 24;
+      let bubbleY = headY - 58 + floatY;
+
+      // Keep within world bounds
+      if (bubbleCenterX - (bubbleW / 2) < 25) bubbleCenterX = 25 + (bubbleW / 2);
+      if (bubbleCenterX + (bubbleW / 2) > this.worldWidth - 25) bubbleCenterX = this.worldWidth - 25 - (bubbleW / 2);
+
+      const bx = bubbleCenterX - (bubbleW / 2);
+      const by = bubbleY;
+
+      // Subtle glow
+      ctx.shadowColor = accentColor;
+      ctx.shadowBlur = 10;
+
+      // Cloud bubble body
+      ctx.fillStyle = bubbleColor;
+      this.roundRect(ctx, bx, by, bubbleW, bubbleH, 13);
+      ctx.fill();
+
+      ctx.strokeStyle = accentColor;
+      ctx.lineWidth = 1.4;
+      ctx.stroke();
+
+      ctx.shadowBlur = 0;
+
+      // Thought bubble text
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillStyle = '#f8fafc';
+      ctx.fillText(text, bubbleCenterX, by + (bubbleH / 2));
+
+      ctx.restore();
+    });
+  }
+
+  roundRect(ctx, x, y, width, height, radius) {
+    ctx.beginPath();
+    ctx.moveTo(x + radius, y);
+    ctx.lineTo(x + width - radius, y);
+    ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+    ctx.lineTo(x + width, y + height - radius);
+    ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+    ctx.lineTo(x + radius, y + height);
+    ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+    ctx.lineTo(x, y + radius);
+    ctx.quadraticCurveTo(x, y, x + radius, y);
+    ctx.closePath();
+  }
+
+  getCurrentRoomName(x, y) {
+    for (const r of this.rooms) {
+      if (x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
+        return r.title;
+      }
+    }
+    return 'Corridor';
   }
 
   renderOverheadLabels(ctx) {
@@ -1268,18 +2092,23 @@ class Office2DScene {
     ctx.resetTransform();
 
     // Top-left RPG Guide pill
-    ctx.fillStyle = 'rgba(15, 23, 42, 0.88)';
-    ctx.fillRect(14, 14, 260, 48);
-    ctx.strokeStyle = 'rgba(56, 189, 248, 0.3)';
+    ctx.fillStyle = 'rgba(15, 23, 42, 0.90)';
+    ctx.fillRect(14, 14, 275, 62);
+    ctx.strokeStyle = 'rgba(56, 189, 248, 0.35)';
     ctx.lineWidth = 1;
-    ctx.strokeRect(14, 14, 260, 48);
+    ctx.strokeRect(14, 14, 275, 62);
 
-    ctx.font = '10px system-ui, -apple-system, sans-serif';
+    ctx.font = 'bold 10px system-ui, -apple-system, sans-serif';
     ctx.fillStyle = '#38bdf8';
-    ctx.fillText('🕹️ HCDS VIRTUAL OFFICE (GATHER.TOWN RPG)', 24, 30);
+    ctx.fillText('🕹️ HCDS VIRTUAL OFFICE (GATHER.TOWN RPG)', 24, 29);
+    ctx.font = '9.5px system-ui, -apple-system, sans-serif';
     ctx.fillStyle = '#94a3b8';
     ctx.fillText('Move: WASD / Arrow keys or Click floor', 24, 42);
     ctx.fillText('Interact: Walk close + SPACE or Click desk', 24, 54);
+
+    const currentZone = this.getCurrentRoomName(this.player.x, this.player.y);
+    ctx.fillStyle = '#4ade80';
+    ctx.fillText(`📍 Zone: ${currentZone}`, 24, 67);
     ctx.restore();
   }
 }
