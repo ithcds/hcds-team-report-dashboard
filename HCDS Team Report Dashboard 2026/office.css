@@ -275,18 +275,13 @@ body.office-fullscreen #section-office3d .office-container {
   background: #090d16;
 }
 
-.office-canvas-wrap {
-  width: 100%;
-  height: 100%;
-}
-
 .office-canvas-wrap-2d {
   width: 100%;
   height: 100%;
   position: absolute;
   inset: 0;
   overflow: hidden;
-  background: #0b1120;
+  background: #090d16;
 }
 
 .office-canvas-wrap-2d canvas {
@@ -296,13 +291,6 @@ body.office-fullscreen #section-office3d .office-container {
   image-rendering: pixelated;
   image-rendering: -moz-crisp-edges;
   image-rendering: crisp-edges;
-  outline: none;
-}
-
-.office-canvas-wrap canvas {
-  display: block;
-  width: 100% !important;
-  height: 100% !important;
   outline: none;
 }
 

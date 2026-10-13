@@ -755,7 +755,8 @@
       <i class="bi bi-alarm-fill"></i> WAHA Reminders
     </button>
     <button class="nav-link-custom" data-section="office3d" id="nav-office3d">
-      <i class="bi bi-box-fill text-info"></i> 3D Virtual Office
+      <i class="bi bi-controller text-info"></i> Virtual Office
+      <span class="badge bg-primary ms-auto" style="font-size: 0.62rem; padding: 0.2rem 0.45rem;">2D RPG</span>
     </button>
 
     <div class="nav-section-label">Product Matrices</div>
@@ -1338,8 +1339,8 @@
               <i class="bi bi-building"></i>
             </div>
             <div class="office-title">
-              <h2>HCDS HQ — 3D Virtual Office</h2>
-              <span>Interactive spatial workspace synced with HC-SUPABASE in real-time</span>
+              <h2>HCDS HQ — Virtual Office (2D RPG)</h2>
+              <span>Gather.town style interactive workspace synced with HC-SUPABASE in real-time</span>
             </div>
           </div>
 
@@ -1382,32 +1383,27 @@
             </ul>
           </aside>
 
-          <!-- Center: 2D & 3D Stage -->
+          <!-- Center: 2D Gather.town RPG Stage -->
           <main class="office-stage">
             <div class="stage-controls">
-              <!-- View Mode Toggle -->
-              <div class="btn-group me-1" role="group">
-                <button class="stage-btn active" id="btnMode2D" title="Switch to 2D Gather.town RPG View">
-                  <i class="bi bi-controller"></i> 2D RPG
-                </button>
-                <button class="stage-btn" id="btnMode3D" title="Switch to 3D Isometric View">
-                  <i class="bi bi-box"></i> 3D View
-                </button>
-              </div>
+              <button class="stage-btn" id="btnZoomIn" onclick="window.office2D && window.office2D.zoomIn()" title="Zoom In">
+                <i class="bi bi-zoom-in"></i>
+              </button>
+              <button class="stage-btn" id="btnZoomOut" onclick="window.office2D && window.office2D.zoomOut()" title="Zoom Out">
+                <i class="bi bi-zoom-out"></i>
+              </button>
+              <button class="stage-btn" id="btnResetCam" onclick="window.office2D && window.office2D.resetCameraView()" title="Fit entire office to screen">
+                <i class="bi bi-arrows-fullscreen"></i> Fit Screen
+              </button>
               <button class="stage-btn" id="btnDayNight" title="Toggle Day/Night mode">
                 <i class="bi bi-moon-stars"></i> Night
               </button>
-              <button class="stage-btn" id="btnResetCam" onclick="if (window.activeOfficeMode === '3d' && window.HCDSOffice && window.HCDSOffice.resetCameraView) { window.HCDSOffice.resetCameraView(); } else if (window.office2D && window.office2D.resetCameraView) { window.office2D.resetCameraView(); }" title="Reset Camera to default viewpoint">
-                <i class="bi bi-arrows-fullscreen"></i> Reset View
-              </button>
             </div>
 
-            <!-- 2D Canvas Wrap (Default Gather.town RPG) -->
-            <div class="office-canvas-wrap-2d" id="officeWrap2D" style="width:100%; height:100%;"></div>
-
-            <!-- 3D Canvas Wrap (Three.js Isometric) -->
-            <div class="office-canvas-wrap" id="officeWrap3D" style="display:none; width:100%; height:100%;"></div>
-            <div class="office-labels-layer"></div>
+            <!-- 2D Canvas Wrap (Gather.town RPG) -->
+            <div class="office-canvas-wrap-2d" id="officeWrap2D" style="width:100%; height:100%;">
+              <canvas id="office2DCanvas" style="display:block; width:100%; height:100%; image-rendering:pixelated;"></canvas>
+            </div>
 
             <div class="stage-hint" id="officeStageHint">
               <i class="bi bi-controller me-1"></i> WASD / Arrows to walk • Click floor to move • SPACE or Click to interact with personnel or Oyen the cat!
@@ -5570,7 +5566,7 @@ const AppController = {
       tasks: { title: 'Daily Team Tasks', sub: 'Interactive sprint backlog with SQLite WASM persistence' },
       personnel: { title: 'Personnel Allocation & Reports', sub: 'Team capacity distribution & weekly deliverables' },
       reminders: { title: 'WAHA Reminders & Automation', sub: 'Real-time scheduled alerts, recurring routines & agent tasks from HC-SUPABASE' },
-      office3d: { title: '3D Virtual Office', sub: 'Interactive spatial workspace synced with HC-SUPABASE in real-time' },
+      office3d: { title: 'Virtual Office (2D RPG)', sub: 'Gather.town style interactive workspace synced with HC-SUPABASE' },
       ismartoffice: { title: 'iSmartOffice Matrix', sub: 'Patient, Clinic, Provider, and Web Clinic feature verification' },
       enterpriseapps: { title: 'Enterprise Deployments', sub: 'AllCare Ortho, FMBO Bioprogressive, and Sphinx QA verification' },
       annie: { title: 'Annie Insights Product Matrix', sub: 'AI diagnostic classification, cephalometrics, and reporting' },
@@ -5623,45 +5619,6 @@ const AppController = {
     const container = document.querySelector('#section-office3d .office-container');
     if (!container) return;
 
-    window.activeOfficeMode = window.activeOfficeMode || '2d';
-
-    const btnMode2D = document.getElementById('btnMode2D');
-    const btnMode3D = document.getElementById('btnMode3D');
-    const wrap2D = document.getElementById('officeWrap2D');
-    const wrap3D = document.getElementById('officeWrap3D');
-    const hint = document.getElementById('officeStageHint');
-
-    const switchMode = (mode) => {
-      window.activeOfficeMode = mode;
-      if (mode === '2d') {
-        if (wrap2D) wrap2D.style.display = 'block';
-        if (wrap3D) wrap3D.style.display = 'none';
-        if (btnMode2D) btnMode2D.classList.add('active');
-        if (btnMode3D) btnMode3D.classList.remove('active');
-        if (hint) hint.innerHTML = '<i class="bi bi-controller me-1"></i> WASD / Arrows to walk • Click floor to move • SPACE or Click to interact with personnel or Oyen the cat!';
-        if (window.office2D) window.office2D.resizeCanvas();
-      } else {
-        if (wrap2D) wrap2D.style.display = 'none';
-        if (wrap3D) wrap3D.style.display = 'block';
-        if (btnMode3D) btnMode3D.classList.add('active');
-        if (btnMode2D) btnMode2D.classList.remove('active');
-        if (hint) hint.innerHTML = '<i class="bi bi-mouse me-1"></i> Left-click drag to rotate • Right-click drag to pan • Scroll to zoom • Click personnel or Oyen the cat!';
-        window.dispatchEvent(new Event('resize'));
-        if (window.HCDSOffice && window.HCDSOffice.resetCameraView) {
-          window.HCDSOffice.resetCameraView();
-        }
-      }
-    };
-
-    if (btnMode2D && !btnMode2D.dataset.bound) {
-      btnMode2D.dataset.bound = 'true';
-      btnMode2D.onclick = () => switchMode('2d');
-    }
-    if (btnMode3D && !btnMode3D.dataset.bound) {
-      btnMode3D.dataset.bound = 'true';
-      btnMode3D.onclick = () => switchMode('3d');
-    }
-
     const doInit = async () => {
       let ready = false;
 
@@ -5672,14 +5629,7 @@ const AppController = {
         ready = true;
       }
 
-      // 2. Initialize 3D Three.js engine
-      if (window.HCDSOffice && window.HCDSOffice.initOffice && !this.office3dCanvasReady) {
-        window.HCDSOffice.initOffice(container);
-        this.office3dCanvasReady = true;
-        ready = true;
-      }
-
-      // 3. Initialize Supabase Realtime Adapter
+      // 2. Initialize Supabase Realtime Adapter
       if (window.HCDSOfficeSupabase && window.HCDSOfficeSupabase.init && !this.officeSupabaseReady) {
         await window.HCDSOfficeSupabase.init(container);
         this.officeSupabaseReady = true;
@@ -5687,8 +5637,7 @@ const AppController = {
       }
 
       if (ready || (window.office2D && this.officeSupabaseReady)) {
-        this.office3dInitialized = true;
-        switchMode(window.activeOfficeMode || '2d');
+        this.officeInitialized = true;
       } else {
         setTimeout(doInit, 150);
         return;
@@ -5696,24 +5645,19 @@ const AppController = {
 
       setTimeout(() => {
         window.dispatchEvent(new Event('resize'));
-        if (window.activeOfficeMode === '2d' && window.office2D) {
+        if (window.office2D) {
           window.office2D.resizeCanvas();
-        } else if (window.HCDSOffice && window.HCDSOffice.resetCameraView) {
-          window.HCDSOffice.resetCameraView();
         }
       }, 100);
     };
 
-    if (!this.office3dInitialized) {
+    if (!this.officeInitialized) {
       await doInit();
     } else {
-      switchMode(window.activeOfficeMode || '2d');
       setTimeout(() => {
         window.dispatchEvent(new Event('resize'));
-        if (window.activeOfficeMode === '2d' && window.office2D) {
+        if (window.office2D) {
           window.office2D.resizeCanvas();
-        } else if (window.HCDSOffice && window.HCDSOffice.resetCameraView) {
-          window.HCDSOffice.resetCameraView();
         }
       }, 100);
     }
@@ -6474,10 +6418,9 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 </script>
 
-<!-- Virtual Office Modules (2D Gather.town RPG & 3D Isometric) -->
+<!-- Virtual Office (2D Gather.town RPG) -->
 <script src="office2d.js"></script>
 <script src="office-supabase.js"></script>
-<script type="module" src="office3d.js"></script>
 
 </body>
 </html>
