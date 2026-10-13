@@ -191,7 +191,19 @@ const OFFICE_CLUSTERS = [
     badge: 'Growth & Partners',
     members: ['ary']
   }
-];
+// Helper to filter out excluded recipient reminders
+function isExcludedReminder(r) {
+  if (!r) return false;
+  const fields = [r.phone_number, r.recipient_name, r.recipient, r.target, r.to];
+  for (const f of fields) {
+    if (!f) continue;
+    const s = String(f);
+    if (s.includes('628158809735') || s.includes('8158809735')) return true;
+    const d = s.replace(/\D/g, '');
+    if (d.includes('8158809735')) return true;
+  }
+  return false;
+}
 
 class OfficeSupabaseAdapter {
   constructor() {
@@ -295,7 +307,8 @@ class OfficeSupabaseAdapter {
       ]);
 
       this.tasks = (Array.isArray(tasksRes) && tasksRes.length > 0) ? tasksRes : (this.tasks || []);
-      this.reminders = (Array.isArray(remindersRes) && remindersRes.length > 0) ? remindersRes : (this.reminders || []);
+      const rawReminders = (Array.isArray(remindersRes) && remindersRes.length > 0) ? remindersRes : (this.reminders || []);
+      this.reminders = rawReminders.filter(r => !isExcludedReminder(r));
       this.contacts = (Array.isArray(contactsRes) && contactsRes.length > 0) ? contactsRes : (this.contacts || []);
 
       this.processData();
@@ -333,7 +346,11 @@ class OfficeSupabaseAdapter {
         });
         clearTimeout(id);
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        return await res.json();
+        const result = await res.json();
+        if (table === 'team_reminders' && Array.isArray(result)) {
+          return result.filter(r => !isExcludedReminder(r));
+        }
+        return result;
       } catch (err) {
         clearTimeout(id);
         throw err;
@@ -405,8 +422,20 @@ class OfficeSupabaseAdapter {
   }
 
   handleReminderChange(payload) {
-    const { eventType, new: newRow } = payload;
+    const { eventType, new: newRow, old: oldRow } = payload;
+    if (eventType === 'DELETE' && oldRow) {
+      this.reminders = this.reminders.filter(r => r.id !== oldRow.id);
+      this.processData();
+      this.renderAll();
+      return;
+    }
     if (eventType === 'INSERT' || eventType === 'UPDATE') {
+      if (newRow && isExcludedReminder(newRow)) {
+        this.reminders = this.reminders.filter(r => r.id !== newRow.id);
+        this.processData();
+        this.renderAll();
+        return;
+      }
       const idx = this.reminders.findIndex(r => r.id === newRow.id);
       if (idx !== -1) this.reminders[idx] = newRow;
       else this.reminders.unshift(newRow);
