@@ -314,6 +314,8 @@ class Office2DScene {
         key: 'acid',
         name: 'Seus Acid',
         role: 'iSmartOffice Team Lead',
+        isHijab: true,
+        gender: 'female',
         x: 95,
         y: 380,
         homeX: 95,
@@ -323,9 +325,12 @@ class Office2DScene {
         deskW: 68,
         deskH: 40,
         color: '#db2777',
-        hair: '#701a75',
-        shirt: '#be185d',
-        pants: '#4c0519',
+        hijabColor: '#db2777',
+        hijabDrape: '#be185d',
+        innerCap: '#fdf2f8',
+        shirt: '#ec4899',
+        skirt: '#831843',
+        pants: '#831843',
         status: 'working',
         activeTask: 'Review Mobile App Bug Backlog (#12, #14, #16)',
         direction: 'down',
@@ -1919,49 +1924,170 @@ class Office2DScene {
 
     const drawY = y + bobY;
 
-    // Legs
-    ctx.fillStyle = char.pants || '#1e293b';
-    if (isPraying) {
-      // Folded kneeling posture
-      ctx.fillRect(x - 6, drawY + 8, 12, 5);
-    } else {
-      ctx.fillRect(x - 5, drawY + 6, 4, 7 + legOffset * 0.5);
-      ctx.fillRect(x + 1, drawY + 6, 4, 7 - legOffset * 0.5);
-    }
+    const isHijab = char.isHijab || char.key === 'acid';
 
-    // Torso / Shirt
-    ctx.fillStyle = char.shirt || char.color;
-    ctx.fillRect(x - 6, drawY - 4, 12, 10);
+    if (isHijab) {
+      // ═══════════════════════════════════════════════════════════
+      // FEMALE MODEL WITH HIJAB (SEUS ACID)
+      // ═══════════════════════════════════════════════════════════
+      const hijabColor = char.hijabColor || '#db2777';
+      const hijabDrape = char.hijabDrape || '#be185d';
+      const skirtColor = char.skirt || char.pants || '#831843';
+      const blouseColor = char.shirt || '#ec4899';
 
-    // Head
-    ctx.fillStyle = '#fcd34d';
-    ctx.fillRect(x - 5, drawY - 16, 10, 12);
+      // 1. Lower Body / Maxi Skirt
+      ctx.fillStyle = skirtColor;
+      if (isPraying) {
+        ctx.fillRect(x - 7, drawY + 8, 14, 6);
+      } else {
+        const sway = legOffset * 0.7;
+        ctx.beginPath();
+        ctx.moveTo(x - 6, drawY + 6);
+        ctx.lineTo(x + 6, drawY + 6);
+        ctx.lineTo(x + 7 + sway, drawY + 14);
+        ctx.lineTo(x - 7 + sway, drawY + 14);
+        ctx.closePath();
+        ctx.fill();
 
-    // Hair
-    ctx.fillStyle = char.hair || '#0f172a';
-    ctx.fillRect(x - 6, drawY - 19, 12, 5);
-    ctx.fillRect(x - 6, drawY - 16, 2, 4);
-    ctx.fillRect(x + 4, drawY - 16, 2, 4);
+        // Delicate Shoes
+        ctx.fillStyle = '#0f172a';
+        ctx.fillRect(x - 5 + sway, drawY + 13, 3, 2);
+        ctx.fillRect(x + 2 + sway, drawY + 13, 3, 2);
+      }
 
-    // Eyes
-    ctx.fillStyle = '#0f172a';
-    if (char.direction === 'up' || isPraying) {
-      // Facing away or closed in prayer
-    } else if (char.direction === 'left') {
-      ctx.fillRect(x - 4, drawY - 11, 2, 2.5);
-    } else if (char.direction === 'right') {
-      ctx.fillRect(x + 2, drawY - 11, 2, 2.5);
-    } else {
-      ctx.fillRect(x - 3, drawY - 11, 2, 2.5);
-      ctx.fillRect(x + 1, drawY - 11, 2, 2.5);
-    }
+      // 2. Modest Blouse & Sleeves
+      ctx.fillStyle = blouseColor;
+      ctx.fillRect(x - 6, drawY - 4, 12, 10);
+      // Long sleeves
+      ctx.fillRect(x - 8, drawY - 3, 3, 9);
+      ctx.fillRect(x + 5, drawY - 3, 3, 9);
+      // Hands
+      ctx.fillStyle = '#fcd34d';
+      ctx.fillRect(x - 8, drawY + 6, 3, 2);
+      ctx.fillRect(x + 5, drawY + 6, 3, 2);
 
-    // Glasses for Master Aryo & dr. Kusnoto
-    if (char.key === 'aryo' || char.key === 'kusnoto') {
-      ctx.strokeStyle = '#38bdf8';
+      // 3. Hijab Hood Base (Crown & Back of Head)
+      ctx.fillStyle = hijabColor;
+      ctx.beginPath();
+      ctx.arc(x, drawY - 14, 8, Math.PI, 0);
+      ctx.fill();
+      ctx.fillRect(x - 8, drawY - 14, 16, 10);
+
+      // 4. Face Opening (Ciput / Underscarf & Skin)
+      if (char.direction !== 'up') {
+        // Inner cap (ciput) line
+        ctx.fillStyle = char.innerCap || '#fdf2f8';
+        ctx.fillRect(x - 4, drawY - 17, 8, 2);
+
+        // Face skin
+        ctx.fillStyle = '#fcd34d';
+        ctx.fillRect(x - 4, drawY - 15, 8, 10);
+
+        // 5. Feminine Eyes with Eyelashes & Soft Blush
+        ctx.fillStyle = '#0f172a';
+        if (isPraying) {
+          // Serene closed eyes in prayer
+          ctx.strokeStyle = '#475569';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(x - 3, drawY - 10);
+          ctx.lineTo(x - 1, drawY - 10);
+          ctx.moveTo(x + 1, drawY - 10);
+          ctx.lineTo(x + 3, drawY - 10);
+          ctx.stroke();
+        } else if (char.direction === 'left') {
+          ctx.fillRect(x - 3, drawY - 11, 2, 2.5);
+          ctx.fillStyle = '#334155';
+          ctx.fillRect(x - 4, drawY - 12, 1.5, 1);
+        } else if (char.direction === 'right') {
+          ctx.fillRect(x + 1, drawY - 11, 2, 2.5);
+          ctx.fillStyle = '#334155';
+          ctx.fillRect(x + 2.5, drawY - 12, 1.5, 1);
+        } else {
+          // Expressive eyes with eyelashes
+          ctx.fillRect(x - 3, drawY - 11, 2, 2.5);
+          ctx.fillRect(x + 1, drawY - 11, 2, 2.5);
+          ctx.fillStyle = '#334155';
+          ctx.fillRect(x - 4, drawY - 12, 1.5, 1);
+          ctx.fillRect(x + 2.5, drawY - 12, 1.5, 1);
+
+          // Soft pink blush
+          ctx.fillStyle = 'rgba(244, 114, 182, 0.55)';
+          ctx.fillRect(x - 4, drawY - 8, 2, 1.5);
+          ctx.fillRect(x + 2, drawY - 8, 2, 1.5);
+        }
+      }
+
+      // 6. Hijab Front Drape & Brooch
+      ctx.fillStyle = hijabDrape;
+      ctx.beginPath();
+      ctx.moveTo(x - 7, drawY - 4);
+      ctx.lineTo(x + 7, drawY - 4);
+      ctx.lineTo(x + 4, drawY + 3);
+      ctx.lineTo(x, drawY + 5);
+      ctx.lineTo(x - 4, drawY + 3);
+      ctx.closePath();
+      ctx.fill();
+
+      // Fold contour
+      ctx.strokeStyle = '#f472b6';
       ctx.lineWidth = 1;
-      ctx.strokeRect(x - 4, drawY - 12, 3, 3);
-      ctx.strokeRect(x + 1, drawY - 12, 3, 3);
+      ctx.beginPath();
+      ctx.moveTo(x, drawY - 4);
+      ctx.lineTo(x, drawY + 3);
+      ctx.stroke();
+
+      // Golden brooch pin
+      ctx.fillStyle = '#facc15';
+      ctx.fillRect(x - 1, drawY - 2, 2, 2);
+    } else {
+      // ═══════════════════════════════════════════════════════════
+      // STANDARD MALE / NEUTRAL PIXEL CHARACTER
+      // ═══════════════════════════════════════════════════════════
+      // Legs
+      ctx.fillStyle = char.pants || '#1e293b';
+      if (isPraying) {
+        // Folded kneeling posture
+        ctx.fillRect(x - 6, drawY + 8, 12, 5);
+      } else {
+        ctx.fillRect(x - 5, drawY + 6, 4, 7 + legOffset * 0.5);
+        ctx.fillRect(x + 1, drawY + 6, 4, 7 - legOffset * 0.5);
+      }
+
+      // Torso / Shirt
+      ctx.fillStyle = char.shirt || char.color;
+      ctx.fillRect(x - 6, drawY - 4, 12, 10);
+
+      // Head
+      ctx.fillStyle = '#fcd34d';
+      ctx.fillRect(x - 5, drawY - 16, 10, 12);
+
+      // Hair
+      ctx.fillStyle = char.hair || '#0f172a';
+      ctx.fillRect(x - 6, drawY - 19, 12, 5);
+      ctx.fillRect(x - 6, drawY - 16, 2, 4);
+      ctx.fillRect(x + 4, drawY - 16, 2, 4);
+
+      // Eyes
+      ctx.fillStyle = '#0f172a';
+      if (char.direction === 'up' || isPraying) {
+        // Facing away or closed in prayer
+      } else if (char.direction === 'left') {
+        ctx.fillRect(x - 4, drawY - 11, 2, 2.5);
+      } else if (char.direction === 'right') {
+        ctx.fillRect(x + 2, drawY - 11, 2, 2.5);
+      } else {
+        ctx.fillRect(x - 3, drawY - 11, 2, 2.5);
+        ctx.fillRect(x + 1, drawY - 11, 2, 2.5);
+      }
+
+      // Glasses for Master Aryo & dr. Kusnoto
+      if (char.key === 'aryo' || char.key === 'kusnoto') {
+        ctx.strokeStyle = '#38bdf8';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(x - 4, drawY - 12, 3, 3);
+        ctx.strokeRect(x + 1, drawY - 12, 3, 3);
+      }
     }
 
     ctx.restore();
