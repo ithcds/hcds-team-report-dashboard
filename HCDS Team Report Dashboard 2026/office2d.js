@@ -499,6 +499,7 @@ class Office2DScene {
   resizeCanvas() {
     if (!this.canvas || !this.canvas.parentElement) return;
     const rect = this.canvas.parentElement.getBoundingClientRect();
+    if (rect.width < 50 || rect.height < 50) return;
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
     this.canvas.width = Math.floor(rect.width * dpr);
@@ -513,10 +514,12 @@ class Office2DScene {
   }
 
   resetCameraView() {
-    const margin = 30;
-    const scaleX = (this.viewportWidth - margin) / this.worldWidth;
-    const scaleY = (this.viewportHeight - margin) / this.worldHeight;
-    this.camera.zoom = Math.min(scaleX, scaleY, 1.25);
+    const margin = 24;
+    const vpW = Math.max(this.viewportWidth || 1000, 400);
+    const vpH = Math.max(this.viewportHeight || 600, 300);
+    const scaleX = (vpW - margin) / this.worldWidth;
+    const scaleY = (vpH - margin) / this.worldHeight;
+    this.camera.zoom = Math.max(0.4, Math.min(scaleX, scaleY, 1.2));
     this.camera.x = this.worldWidth / 2;
     this.camera.y = this.worldHeight / 2;
     this.camera.targetX = this.camera.x;
@@ -1082,23 +1085,23 @@ class Office2DScene {
     // 2. Room Glass Walls & Borders
     this.renderWalls(ctx);
 
-    // 3. Room Title Ribbons
-    this.renderRoomHeaders(ctx);
-
-    // 4. Background Furniture (Chairs, Projector Screen, Server Racks, Plants)
+    // 3. Background Furniture (Chairs, Projector Screen, Server Racks, Plants)
     this.renderWallFurniture(ctx);
 
-    // 5. Personnel Characters
-    this.renderPersonnel(ctx);
-
-    // 6. Foreground Desks, Monitors, and Keyboards
+    // 4. Foreground Desks, Monitors, and Keyboards
     this.renderDesksAndTech(ctx);
 
-    // 7. Coffee Lounge, Cafeteria, & Prayer Room Props
+    // 5. Coffee Lounge, Cafeteria, & Prayer Room Props
     this.renderLoungeProps(ctx);
     this.renderCafeteriaProps(ctx);
     this.renderPrayerRoomProps(ctx);
     this.renderCat(ctx);
+
+    // 6. Room Title Badges (Always crisp and visible at bottom-left of each room)
+    this.renderRoomHeaders(ctx);
+
+    // 7. Personnel Characters
+    this.renderPersonnel(ctx);
 
     // 8. Visitor Avatar (You)
     this.renderPlayer(ctx);
@@ -1240,19 +1243,31 @@ class Office2DScene {
   renderRoomHeaders(ctx) {
     this.rooms.forEach(r => {
       ctx.save();
-      ctx.font = 'bold 10px system-ui, -apple-system, sans-serif';
+      ctx.font = 'bold 9.5px system-ui, -apple-system, BlinkMacSystemFont, sans-serif';
       const textW = ctx.measureText(r.title).width;
+      const tagW = textW + 16;
+      const tagH = 17;
+      const tagX = r.x + 8;
+      const tagY = r.y + r.h - tagH - 6; // Placed at bottom-left corner of each room
 
-      ctx.fillStyle = 'rgba(15, 23, 42, 0.9)';
-      ctx.fillRect(r.x + 10, r.y + 12, textW + 20, 18);
+      // Background pill
+      ctx.fillStyle = 'rgba(15, 23, 42, 0.94)';
+      ctx.fillRect(tagX, tagY, tagW, tagH);
 
+      // Border outline
+      ctx.strokeStyle = 'rgba(51, 65, 85, 0.75)';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(tagX, tagY, tagW, tagH);
+
+      // Left color accent notch
       ctx.fillStyle = r.borderColor;
-      ctx.fillRect(r.x + 10, r.y + 12, 3, 18);
+      ctx.fillRect(tagX, tagY, 3, tagH);
 
+      // Room Title Text
       ctx.fillStyle = '#f8fafc';
       ctx.textAlign = 'left';
       ctx.textBaseline = 'middle';
-      ctx.fillText(r.title, r.x + 18, r.y + 21);
+      ctx.fillText(r.title, tagX + 8, tagY + (tagH / 2) + 0.5);
       ctx.restore();
     });
   }
@@ -1688,9 +1703,9 @@ class Office2DScene {
     ctx.fillRect(rehalX + 2, rehalY + 5, 2, 14);
     ctx.fillRect(rehalX + 22, rehalY + 5, 2, 14);
 
-    // 4. Wooden Shoe Rack at entrance
-    const shoeRackX = 945;
-    const shoeRackY = 715;
+    // 4. Wooden Shoe Rack at right side
+    const shoeRackX = 1195;
+    const shoeRackY = 722;
     ctx.fillStyle = '#3e1a06';
     ctx.fillRect(shoeRackX, shoeRackY, 36, 22);
     ctx.strokeStyle = '#572507';
@@ -1707,8 +1722,8 @@ class Office2DScene {
     ctx.fillRect(shoeRackX + 20, shoeRackY + 12, 12, 6);
 
     // 5. Serene Lantern Ambient Halo
-    const lanternX = 1190;
-    const lanternY = 690;
+    const lanternX = 1210;
+    const lanternY = 670;
     ctx.fillStyle = '#fbbf24';
     ctx.beginPath();
     ctx.arc(lanternX, lanternY, 4, 0, Math.PI * 2);
