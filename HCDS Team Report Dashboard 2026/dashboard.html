@@ -1330,6 +1330,10 @@
         <!-- Top Header Bar -->
         <header class="office-header">
           <div class="office-title-wrap">
+            <button type="button" class="btn-back-dashboard" id="btnBackDashboard" onclick="AppController.showSection('summary')" title="Return to Executive Dashboard">
+              <i class="bi bi-arrow-left"></i>
+              <span>Back to Dashboard</span>
+            </button>
             <div class="office-logo-badge">
               <i class="bi bi-building"></i>
             </div>
@@ -1384,7 +1388,7 @@
               <button class="stage-btn" id="btnDayNight" title="Toggle Day/Night mode">
                 <i class="bi bi-moon-stars"></i> Night
               </button>
-              <button class="stage-btn" id="btnResetCam" title="Reset Camera to default isometric angle">
+              <button class="stage-btn" id="btnResetCam" onclick="window.HCDSOffice && window.HCDSOffice.resetCameraView && window.HCDSOffice.resetCameraView()" title="Reset Camera to default isometric viewpoint">
                 <i class="bi bi-arrows-fullscreen"></i> Reset View
               </button>
             </div>
@@ -5591,10 +5595,14 @@ const AppController = {
       ov.classList.remove('show');
     }
 
-    if (name === 'reminders') {
-      this.renderReminders();
-    } else if (name === 'office3d') {
+    if (name === 'office3d') {
+      document.body.classList.add('office-fullscreen');
       this.initVirtualOffice();
+    } else {
+      document.body.classList.remove('office-fullscreen');
+      if (name === 'reminders') {
+        this.renderReminders();
+      }
     }
   },
 
@@ -5614,6 +5622,9 @@ const AppController = {
     
     setTimeout(() => {
       window.dispatchEvent(new Event('resize'));
+      if (window.HCDSOffice && window.HCDSOffice.resetCameraView) {
+        window.HCDSOffice.resetCameraView();
+      }
     }, 100);
   },
 

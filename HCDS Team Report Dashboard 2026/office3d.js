@@ -812,14 +812,14 @@ function animate() {
 function onWindowResize() {
   if (!root || !renderer || !camera) return;
   const width = root.clientWidth || 800;
-  const height = root.clientHeight || 600;
+  const height = root.clientHeight || 450;
   const aspect = width / height;
-  const frustumSize = 14;
+  const view = Math.max(15.5, 21 / aspect);
 
-  camera.left = (-frustumSize * aspect) / 2;
-  camera.right = (frustumSize * aspect) / 2;
-  camera.top = frustumSize / 2;
-  camera.bottom = -frustumSize / 2;
+  camera.left = (-view * aspect) / 2;
+  camera.right = (view * aspect) / 2;
+  camera.top = view / 2;
+  camera.bottom = -view / 2;
   camera.updateProjectionMatrix();
 
   renderer.setSize(width, height);
@@ -845,28 +845,20 @@ export function initOffice(containerElement) {
   scene = new THREE.Scene();
   scene.background = new THREE.Color('#090d16');
 
-  // Orthographic Isometric Camera
-  const aspect = root.clientWidth / root.clientHeight;
-  const frustumSize = 14;
-  camera = new THREE.OrthographicCamera(
-    (-frustumSize * aspect) / 2,
-    (frustumSize * aspect) / 2,
-    frustumSize / 2,
-    -frustumSize / 2,
-    0.1,
-    100
-  );
-  // Classic 45-degree isometric position
-  camera.position.set(16, 16, 16);
-  camera.lookAt(0, 0, 0);
+  // Orthographic Isometric Camera (Matched to dedinurwibowo.my.id)
+  camera = new THREE.OrthographicCamera(-10, 10, 6, -6, 0.1, 100);
+  camera.position.set(15, 14, 15);
 
-  // Orbit Controls
+  // Orbit Controls (Damping & Angle Limits)
   controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
   controls.dampingFactor = 0.08;
-  controls.minZoom = 0.6;
-  controls.maxZoom = 2.8;
-  controls.target.set(0, 0.5, 0);
+  controls.minPolarAngle = 0.45;
+  controls.maxPolarAngle = 1.25;
+  controls.minZoom = 0.7;
+  controls.maxZoom = 3.5;
+  controls.screenSpacePanning = true;
+  controls.target.set(0, 0, 0.3);
 
   // Lights
   hemiLight = new THREE.HemisphereLight('#f8fafc', '#64748b', 1.1);
@@ -932,8 +924,8 @@ export function updateMemberStatus(personKey, status, activeTaskTitle = '') {
 
 export function resetCameraView() {
   if (!camera || !controls) return;
-  camera.position.set(16, 16, 16);
-  controls.target.set(0, 0.5, 0);
+  camera.position.set(15, 14, 15);
+  controls.target.set(0, 0, 0.3);
   camera.zoom = 1;
   camera.updateProjectionMatrix();
   controls.update();

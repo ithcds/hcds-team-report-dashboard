@@ -39,6 +39,10 @@
       <!-- Top Header Bar -->
       <header class="office-header">
         <div class="office-title-wrap">
+          <a href="dashboard.html" class="btn-back-dashboard" title="Return to Executive Dashboard">
+            <i class="bi bi-arrow-left"></i>
+            <span>Back to Dashboard</span>
+          </a>
           <div class="office-logo-badge">
             <i class="bi bi-building"></i>
           </div>
@@ -93,7 +97,7 @@
             <button class="stage-btn" id="btnDayNight" title="Toggle Day/Night mode">
               <i class="bi bi-moon-stars"></i> Night
             </button>
-            <button class="stage-btn" id="btnResetCam" title="Reset Camera to default isometric angle">
+            <button class="stage-btn" id="btnResetCam" onclick="window.HCDSOffice && window.HCDSOffice.resetCameraView && window.HCDSOffice.resetCameraView()" title="Reset Camera to default isometric viewpoint">
               <i class="bi bi-arrows-fullscreen"></i> Reset View
             </button>
           </div>

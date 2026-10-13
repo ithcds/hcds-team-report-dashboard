@@ -29,6 +29,68 @@
   color: var(--text-main);
 }
 
+/* Back to Dashboard Button */
+.btn-back-dashboard {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.42rem 0.85rem;
+  border-radius: 8px;
+  background: rgba(30, 41, 59, 0.85);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  color: #f8fafc;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  backdrop-filter: blur(4px);
+  margin-right: 0.35rem;
+}
+
+.btn-back-dashboard:hover {
+  background: rgba(56, 189, 248, 0.2);
+  border-color: #38bdf8;
+  color: #38bdf8;
+  transform: translateX(-2px);
+  box-shadow: 0 4px 12px rgba(56, 189, 248, 0.25);
+}
+
+/* Fullscreen immersion when 3D Office is active in dashboard */
+body.office-fullscreen #sidebar,
+body.office-fullscreen #sidebarOverlay {
+  display: none !important;
+}
+
+body.office-fullscreen .topbar {
+  display: none !important;
+}
+
+body.office-fullscreen .main-content {
+  margin-left: 0 !important;
+  padding: 0 !important;
+  width: 100vw !important;
+  max-width: 100vw !important;
+  min-height: 100vh !important;
+  height: 100vh !important;
+  overflow: hidden !important;
+}
+
+body.office-fullscreen #section-office3d {
+  width: 100vw !important;
+  height: 100vh !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+body.office-fullscreen #section-office3d .office-container {
+  height: 100vh !important;
+  min-height: 100vh !important;
+  border-radius: 0 !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
 /* Header Bar */
 .office-header {
   display: flex;
