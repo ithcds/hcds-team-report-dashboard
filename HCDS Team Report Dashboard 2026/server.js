@@ -20,7 +20,43 @@ const MIME_TYPES = {
   '.csv': 'text/csv; charset=UTF-8'
 };
 
+const https = require('https');
+
 const server = http.createServer((req, res) => {
+  // Supabase proxy for local development CORS bypass
+  if (req.url.startsWith('/api/supabase/')) {
+    const targetPath = req.url.replace('/api/supabase/', '/rest/v1/');
+    const options = {
+      hostname: 'supabase.hcds.ai',
+      port: 443,
+      path: targetPath,
+      method: req.method,
+      headers: {
+        'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNzg3NjA2OTQyLCJleHAiOjIxMDMxODI5NDJ9.ck9xeyHCL3PBTq4Ozu1NqBi3BCsF8sS5zbtfEL_4no4',
+        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJyb2xlIjoiYW5vbiIsImlzcyI6InN1cGFiYXNlIiwiaWF0IjoxNzg3NjA2OTQyLCJleHAiOjIxMDMxODI5NDJ9.ck9xeyHCL3PBTq4Ozu1NqBi3BCsF8sS5zbtfEL_4no4',
+        'Content-Type': 'application/json'
+      }
+    };
+
+    const proxyReq = https.request(options, (proxyRes) => {
+      res.writeHead(proxyRes.statusCode, {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        'Access-Control-Allow-Headers': '*'
+      });
+      proxyRes.pipe(res);
+    });
+
+    proxyReq.on('error', (e) => {
+      res.writeHead(500, { 'Content-Type': 'application/json' });
+      res.end(JSON.stringify({ error: e.message }));
+    });
+
+    req.pipe(proxyReq);
+    return;
+  }
+
   let reqPath = decodeURIComponent(req.url.split('?')[0]);
   if (reqPath === '/' || reqPath === '') {
     reqPath = '/index.html';

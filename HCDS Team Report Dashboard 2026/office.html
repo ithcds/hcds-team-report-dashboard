@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HCDS HQ — 3D Virtual Office</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏢</text></svg>">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link rel="stylesheet" href="office.css">
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background: #090d16;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+    .standalone-wrapper {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .office-container {
+      height: 100vh !important;
+      min-height: 100vh !important;
+      border-radius: 0 !important;
+      border: none !important;
+    }
+  </style>
+  <!-- Supabase JS Client for Realtime sync -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+<body>
+  <div class="standalone-wrapper">
+    <div class="office-container">
+      <!-- Top Header Bar -->
+      <header class="office-header">
+        <div class="office-title-wrap">
+          <div class="office-logo-badge">
+            <i class="bi bi-building"></i>
+          </div>
+          <div class="office-title">
+            <h2>HCDS HQ — 3D Virtual Office</h2>
+            <span>Interactive spatial workspace synced with HC-SUPABASE in real-time</span>
+          </div>
+        </div>
+
+        <div class="office-stats-strip">
+          <div class="office-stat-item">
+            <span class="office-stat-label">Total Tasks</span>
+            <span class="office-stat-val" id="statTotalTasks">--</span>
+          </div>
+          <div class="office-stat-item">
+            <span class="office-stat-label">In Progress</span>
+            <span class="office-stat-val" style="color: #38bdf8;" id="statActiveTasks">--</span>
+          </div>
+          <div class="office-stat-item">
+            <span class="office-stat-label">Completed</span>
+            <span class="office-stat-val" style="color: #34d399;" id="statCompletedTasks">--</span>
+          </div>
+          <div class="office-stat-item">
+            <span class="office-stat-label">WAHA Reminders</span>
+            <span class="office-stat-val" style="color: #fbbf24;" id="statReminders">--</span>
+          </div>
+          <div class="live-pill">
+            <span class="live-dot"></span>
+            <span id="statMembersOnline">10 Active</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main 3-Column Office Layout -->
+      <div class="office-body">
+        <!-- Left: Live Activity Feed -->
+        <aside class="office-feed-panel">
+          <div class="panel-header">
+            <h3><i class="bi bi-broadcast text-info me-1"></i> Live Activity</h3>
+            <span class="live-pill" style="font-size:0.65rem; padding:0.15rem 0.45rem;">LIVE</span>
+          </div>
+          <ul class="office-feed-list" id="activityList">
+            <li class="feed-item" style="color:var(--text-muted); text-align:center;">
+              Connecting to HC-SUPABASE...
+            </li>
+          </ul>
+        </aside>
+
+        <!-- Center: 3D Stage -->
+        <main class="office-stage">
+          <div class="stage-controls">
+            <button class="stage-btn" id="btnDayNight" title="Toggle Day/Night mode">
+              <i class="bi bi-moon-stars"></i> Night
+            </button>
+            <button class="stage-btn" id="btnResetCam" title="Reset Camera to default isometric angle">
+              <i class="bi bi-arrows-fullscreen"></i> Reset View
+            </button>
+          </div>
+
+          <div class="office-canvas-wrap"></div>
+          <div class="office-labels-layer"></div>
+
+          <div class="stage-hint">
+            <i class="bi bi-mouse me-1"></i> Left-click drag to rotate • Right-click drag to pan • Scroll to zoom • Click personnel or Oyen the cat!
+          </div>
+        </main>
+
+        <!-- Right: Team Clusters -->
+        <aside class="office-roadmap-panel">
+          <div class="panel-header">
+            <h3><i class="bi bi-diagram-3-fill text-primary me-1"></i> Team Desks</h3>
+            <span style="font-size:0.68rem; color:var(--text-muted); font-weight:600;">HQ BAYS</span>
+          </div>
+          <div class="roadmap-body" id="clusterList">
+            <!-- Populated dynamically -->
+          </div>
+        </aside>
+      </div>
+
+      <!-- Bottom: Personnel Quick Dock -->
+      <footer class="office-dock" id="teamDock">
+        <!-- Populated dynamically -->
+      </footer>
+    </div>
+  </div>
+
+  <!-- Person Details Modal -->
+  <div class="office-modal" id="officeModal">
+    <div class="office-modal-content">
+      <div class="office-modal-header">
+        <h3 id="officeModalTitle">Team Member</h3>
+        <button class="office-modal-close" id="officeModalClose" aria-label="Close dialog">&times;</button>
+      </div>
+      <div class="office-modal-body" id="officeModalBody">
+        <!-- Populated dynamically -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Supabase Adapter Script -->
+  <script src="office-supabase.js"></script>
+
+  <!-- Three.js Office Module Loader -->
+  <script type="module">
+    import { initOffice } from './office3d.js';
+
+    async function start() {
+      const container = document.querySelector('.office-container');
+      if (!container) return;
+      
+      // Initialize Three.js 3D Virtual Scene
+      initOffice(container);
+
+      // Initialize Supabase Live Adapter
+      if (window.HCDSOfficeSupabase) {
+        await window.HCDSOfficeSupabase.init(container);
+      }
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', start);
+    } else {
+      start();
+    }
+  </script>
+</body>
+</html>
