@@ -472,9 +472,12 @@ class OfficeSupabaseAdapter {
         }
       }
 
-      // Sync status with 3D model
+      // Sync status with 3D and 2D models
       if (window.HCDSOffice && window.HCDSOffice.updateMemberStatus) {
         window.HCDSOffice.updateMemberStatus(key, state.status, state.activeTask);
+      }
+      if (window.HCDSOffice2D && window.HCDSOffice2D.updateMemberStatus) {
+        window.HCDSOffice2D.updateMemberStatus(key, state.status, state.activeTask);
       }
     });
   }

@@ -280,6 +280,25 @@ body.office-fullscreen #section-office3d .office-container {
   height: 100%;
 }
 
+.office-canvas-wrap-2d {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  background: #0b1120;
+}
+
+.office-canvas-wrap-2d canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+  outline: none;
+}
+
 .office-canvas-wrap canvas {
   display: block;
   width: 100% !important;
@@ -287,14 +306,34 @@ body.office-fullscreen #section-office3d .office-container {
   outline: none;
 }
 
-/* Controls overlay in 3D viewport */
+/* Controls overlay in viewport */
 .stage-controls {
   position: absolute;
   top: 1rem;
   right: 1rem;
   display: flex;
+  align-items: center;
   gap: 0.4rem;
   z-index: 10;
+}
+
+.stage-controls .btn-group {
+  display: inline-flex;
+  border-radius: 6px;
+}
+
+.stage-controls .btn-group .stage-btn {
+  border-radius: 0;
+  border-right: none;
+}
+
+.stage-controls .btn-group .stage-btn:first-child {
+  border-radius: 6px 0 0 6px;
+}
+
+.stage-controls .btn-group .stage-btn:last-child {
+  border-radius: 0 6px 6px 0;
+  border-right: 1px solid var(--border-color);
 }
 
 .stage-btn {
